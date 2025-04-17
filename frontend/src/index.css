@@ -79,3 +79,12 @@ button:focus-visible {
   border-style: solid;
   text-align: center;
 }
+
+/* Login Form */
+.inputBox {
+  display: block;
+}
+
+.inputTitle {
+  margin-left: 35%;
+}

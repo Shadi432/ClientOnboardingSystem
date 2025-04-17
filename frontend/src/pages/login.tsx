@@ -1,13 +1,24 @@
-// import { Form } from "react-router";
+import { Form } from "react-router";
+
+const LOGIN_USER_URL =
+    import.meta.env.MODE === "development"
+    ? import.meta.env.VITE_DEVELOPMENT_LOGIN_USER_URL
+    : import.meta.env.VITE_PRODUCTION_LOGIN_USER_URL;
+
+// const updateState = (value) => {
+//     console.log(value);
+// };
 
 function Login(){
     return(
         <>
-            <p>Login</p>
-            {/* <Form action="/login" method="post">
-                <input name="username" type="text" defaultValue="Enter Username"/>
-                <input name="password" type="text" defaultValue="Enter Password"/>
-            </Form> */}
+            <Form action={LOGIN_USER_URL} method="post">                
+                <span className="inputTitle"> Login </span>
+                <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
+                <input className="inputBox" name="password" type="text" placeholder="Enter Password"/>
+                <button type="submit">Login</button>
+            </Form>
+
         </>
     )
 }
