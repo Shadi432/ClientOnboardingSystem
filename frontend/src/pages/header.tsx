@@ -6,7 +6,7 @@ function App() {
       {/* Text Box */}
       {/* // Button 2 */}
 
-        <h1>Test 1</h1>
+        <h1 id="header">Client Onboarding System</h1>
         <Outlet />
     </>
   )
