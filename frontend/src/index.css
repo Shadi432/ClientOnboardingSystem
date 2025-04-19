@@ -71,7 +71,6 @@ button:focus-visible {
 #header {
   position: absolute;
   top: 0px;
-  height: 10%;
   width: 100%;
   margin-top: 0px;
   background-color:rgba(255, 255, 255, 0.911);
@@ -81,6 +80,10 @@ button:focus-visible {
 }
 
 /* Login Form */
+#loginForm {
+  margin-left: 10%;  
+}
+
 .inputBox {
   display: block;
 }
