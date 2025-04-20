@@ -1,3 +1,4 @@
 import { createCookie } from "react-router";
 
-export const userData = createCookie("userData");
+export const accessTokenCookieManager = createCookie("accessToken");
+export const refreshTokenCookieManager = createCookie("refreshToken");
