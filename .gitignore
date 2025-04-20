@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.react-router/
+.env
+sqlScripts/
 
 # Editor directories and files
 .vscode/*
