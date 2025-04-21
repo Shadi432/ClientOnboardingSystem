@@ -21,12 +21,9 @@ export async function action({request}: any) {
       const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
       const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
 
-      // Give them access token and refresh token
-      const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: "1m"});
-      const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "5m"});
-      
-      accessTokenCookie.accessToken = accessToken;
-      refreshTokenCookie.refreshToken = refreshToken;
+      // Give them access token and refresh token      
+      accessTokenCookie.accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: "1m"});
+      refreshTokenCookie.refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "5m"});
 
       return data("400", {
         headers: [
