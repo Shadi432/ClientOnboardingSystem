@@ -1,8 +1,11 @@
 import { data, Form } from "react-router";
-import { accessTokenCookieManager, refreshTokenCookieManager } from "../components/cookies";
+import { ACCESS_TOKEN_LIFETIME, accessTokenCookieManager, REFRESH_TOKEN_LIFETIME, refreshTokenCookieManager } from "../components/authentication";
 import bcrypt from "bcryptjs";
 import { GetUser } from "../components/database";
 import jwt from "jsonwebtoken";
+
+const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
 
 // LoginUser: Used for the login form
 export async function action({request}: any) {
@@ -12,9 +15,6 @@ export async function action({request}: any) {
 
   const user = await GetUser(username);
 
-  const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
-  const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
-  
   try {
     if(await bcrypt.compare(password, user.Pass)) {
       const cookieHeader = request.headers.get("Cookie");
@@ -22,8 +22,8 @@ export async function action({request}: any) {
       const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
 
       // Give them access token and refresh token      
-      accessTokenCookie.accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: "1m"});
-      refreshTokenCookie.refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "5m"});
+      accessTokenCookie.accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFETIME});
+      refreshTokenCookie.refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFETIME});
 
       return data("400", {
         headers: [
