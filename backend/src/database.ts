@@ -1,6 +1,5 @@
 import tedious, { Connection, Request } from "tedious";
-import {  User } from "./types";
-
+import { User } from "./types";
 
 const CONFIG: tedious.ConnectionConfiguration = {
   server: "MAHDI\\MSSQLSERVER01",
@@ -16,8 +15,7 @@ const CONFIG: tedious.ConnectionConfiguration = {
   }
 };
 
-
-export function GetUser(username: string): Promise<User>{
+export function GetUserFromDB(username: String): Promise<User | null>{
   return new Promise((resolve) => {
     const GET_USER_QUERY = `SELECT * FROM LoginDetails WHERE Username = '${username}'`;
 
@@ -28,6 +26,7 @@ export function GetUser(username: string): Promise<User>{
     let dbRequest = new Request(GET_USER_QUERY, function(err) {
       if (err) {
         console.log(err);
+        resolve(null);
       } else {
         connection.close();        
         resolve(user);
@@ -59,38 +58,10 @@ export function GetUser(username: string): Promise<User>{
           case "UserType":
             user.UserType = column.value;
             break;
+          case "RefreshToken":
+            user.RefreshToken = column.value;
         }
       });
-    });
-
-    connection.connect();
-  });
-}
-
-export function CreateUser(user: User): Promise<Error | null>{
-  return new Promise((resolve) => {
-    
-    const CREATE_USER_QUERY = `INSERT INTO LoginDetails ("Username", "Pass", "Email", "UserType") VALUES ('${user.Username}', '${user.Pass}', '${user.Email}', '${user.UserType}');`;
-
-    // DB Connection
-    let connection = new Connection(CONFIG);
-    
-    let dbRequest = new Request(CREATE_USER_QUERY, function(err) {
-      if (err) {
-        console.log(err);
-        resolve(err);
-      } else {
-        connection.close();
-        resolve(null);
-      }
-    });
-
-    connection.on("connect", function(err){
-      if (err) {
-        console.log("Error: ", err);
-      }
-      
-      connection.execSql(dbRequest);
     });
 
     connection.connect();
