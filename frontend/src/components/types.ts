@@ -19,7 +19,6 @@ export const UserValidator = z.object({
           .email({ message: "Invalid email address"})
           .max(255, { message: "Email should be less than 255 characters long"}),
   UserType: userTypeEnum,
-  RefreshToken: z.optional(z.nullable(z.string()))
 });
 
 export type User = z.infer<typeof UserValidator>;

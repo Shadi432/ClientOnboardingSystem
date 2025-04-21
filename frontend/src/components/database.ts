@@ -59,8 +59,6 @@ export function GetUser(username: string): Promise<User>{
           case "UserType":
             user.UserType = column.value;
             break;
-          case "RefreshToken":
-            user.RefreshToken = column.value;
         }
       });
     });
