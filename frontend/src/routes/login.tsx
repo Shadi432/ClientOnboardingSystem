@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { data, Form } from "react-router";
 import { ACCESS_TOKEN_LIFETIME, accessTokenCookieManager, REFRESH_TOKEN_LIFETIME, refreshTokenCookieManager } from "../components/authentication";
 import bcrypt from "bcryptjs";
@@ -41,18 +42,20 @@ export async function action({request}: any) {
 }
 
 function Login({ actionData }: any){
-    return(
-        <>
-            <Form id="loginForm" action="" method="post">                
-                <span className="inputTitle"> Login </span>
-                <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
-                <input className="inputBox" name="password" type="text" placeholder="Enter Password"/>
-                <button type="submit">Login</button>
-            </Form>
-            { actionData && actionData == "400" && <p> Logged in successfully! </p> }
-            { actionData && actionData == "500" &&  <p> Error whilst logging in </p> }
-        </>
-    )
+  const [showPassword, setShowPassword] = useState(false);
+  return(
+      <>
+          <Form id="loginForm" action="" method="post">                
+              <span className="inputTitle"> Login </span>
+              <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
+              <input className="inputBox" name="password" type={showPassword ? "text" : "password" } placeholder="Enter Password"/>
+              <button type="button" onClick={() => {setShowPassword(!showPassword);}}> {showPassword ? "Hide Password" : "Show Password" } </button>
+              <button type="submit">Login</button>
+          </Form>
+          { actionData && actionData == "400" && <p> Logged in successfully! </p> }
+          { actionData && actionData == "500" &&  <p> Error whilst logging in </p> }
+      </>
+  )
 }
 
 export default Login
