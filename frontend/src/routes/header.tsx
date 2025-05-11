@@ -1,27 +1,16 @@
 import { data, Link,NavLink, Outlet, useFetcher } from "react-router";
-import { UserAuthenticationData } from "../components/types";
-import { VerifyAccessToken } from "../components/authentication";
+import { IsUserAuthenticated } from "../components/authentication";
 
-export async function loader({request}: any) {
-  // { user: user|null, verified: bool, setCookieHeaders = [[],[]] }
-  const userAuthentication: UserAuthenticationData = await VerifyAccessToken(request);
-
-  if (userAuthentication.success) {
-    if (userAuthentication.headersList){
-      return data({response: "500", user: userAuthentication.user}, {
-        headers: [...userAuthentication.headersList]
-      });
-    }
-    return data({response: "Success", user: userAuthentication.user });
-  } else {
-    if (userAuthentication.headersList) {
-      return data("error", {
-        headers: [...userAuthentication.headersList]
-      })
-    } else {
-      return data("not authenticated");
-    }
+export async function loader({ request }: any) {
+  const responseData = await IsUserAuthenticated(request);
+  
+  if (responseData.clientResponse.success) {
+    // Anything that requires authentication in here.
   }
+
+  return data(responseData.clientResponse, {
+    headers: [...responseData.headers],
+  });
 };
 
 function App( { loaderData }: any) {

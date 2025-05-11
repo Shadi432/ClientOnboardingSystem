@@ -106,3 +106,34 @@ export async function Logout(request: any): Promise<any>{
     ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
   ])
 }
+
+export async function IsUserAuthenticated(request: any): Promise<{ clientResponse: { success: boolean, user: User | null }, headers: any[] }>  {
+    // { user: user|null, verified: bool, setCookieHeaders = [[],[]] }
+  const userAuthentication: UserAuthenticationData = await VerifyAccessToken(request);
+
+  if (userAuthentication.success) {
+      if (userAuthentication.headersList){
+        return ({
+          clientResponse: { success: true, user: userAuthentication.user }, 
+          headers: userAuthentication.headersList
+        });
+      } else {
+      return ({
+        clientResponse: { success: true, user: userAuthentication.user },
+        headers: [],
+       });
+      }
+    } else {
+      if (userAuthentication.headersList) {
+        return {
+          clientResponse: { success: false, user: null },
+          headers: userAuthentication.headersList 
+          };
+      } else {
+        return {
+          clientResponse: { success: false, user: userAuthentication.user },
+          headers: [],
+        };
+      }
+  }
+}

@@ -15,26 +15,27 @@ export async function action({request}: any) {
   const password = formData.get("password");
 
   const user = await GetUser(username);
-
+  
   try {
     if(await bcrypt.compare(password, user.Pass)) {
       const cookieHeader = request.headers.get("Cookie");
       const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
       const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
-
+      
       // Give them access token and refresh token      
       accessTokenCookie.accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFETIME});
       refreshTokenCookie.refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFETIME});
-
+      
       return data("400", {
         headers: [
           ["Set-Cookie", await accessTokenCookieManager.serialize(accessTokenCookie)],
           ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
         ]
       });
+    } else {
+      console.log("Unsuccessful login: Incorrect password entered!");
+      return data("500")
     }
-    console.log("Unsuccessful login");
-    return data("500")
   } catch (err) {
     console.log(`Errors whilst logging in: ${err}`);
     return data("500")
