@@ -2,6 +2,7 @@ import { data, Form } from "react-router";
 import bcrypt from "bcryptjs";
 import { CreateUser } from "../components/database";
 import { User, UserValidator } from "../components/types";
+import { useState } from "react";
 
 
 export async function action({ request }: any){
@@ -39,12 +40,13 @@ export async function action({ request }: any){
 }
 
 function CreateUserMenu( { actionData }: any){
+  const [showPassword, setShowPassword] = useState(false);
   return(
     <>
       <Form action="" method="post">
         <span className="inputTitle">Create a New User </span>
         <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
-        <input className="inputBox" name="password" type="text" placeholder="Enter Password"/>
+        <input className="inputBox" name="password" type={showPassword ? "text" : "password" } placeholder="Enter Password"/>
         <input className="inputBox" name="email" type="text" placeholder="Enter Email"/>
         {/* Selct user role? Dropdown Menu */}
         <select id="userTypeDropdown" name="userType">
@@ -52,6 +54,7 @@ function CreateUserMenu( { actionData }: any){
           <option value="Manager">Manager</option>
           <option value="MLRO">MLRO</option>
         </select>
+        <button type="button" onClick = {() => {setShowPassword(!showPassword);}}> {showPassword ? "Hide Password" : "Show Password" } </button>
         <button type="submit"> Create Account </button>
         { actionData && actionData.err && <p> { actionData.err }</p>}
         { actionData && actionData.success && <p> Account created successfully! </p>}
