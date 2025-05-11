@@ -147,8 +147,8 @@ export async function UpdateAuthTokens(accessTokenCookie: any, refreshTokenCooki
 
 export async function Logout(request: any): Promise<any>{
   const cookieHeader = request.headers.get("Cookie");
-  const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
-  const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
+  const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader);
+  const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader);
 
   accessTokenCookie.accessToken = jwt.sign({}, ACCESS_TOKEN_SECRET, { expiresIn: SET_TOKEN_EXPIRED});
   refreshTokenCookie.refreshToken = jwt.sign({}, REFRESH_TOKEN_SECRET, { expiresIn: SET_TOKEN_EXPIRED});
