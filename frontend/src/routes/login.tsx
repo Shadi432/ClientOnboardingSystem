@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { data, Form } from "react-router";
-import { ACCESS_TOKEN_LIFETIME, accessTokenCookieManager, REFRESH_TOKEN_LIFETIME, refreshTokenCookieManager } from "../components/authentication";
+import { GenerateAccessTokens } from "../components/authentication";
 import bcrypt from "bcryptjs";
 import { GetUser } from "../components/database";
-import jwt from "jsonwebtoken";
-
-const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
-const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
 
 // LoginUser: Used for the login form
 export async function action({request}: any) {
@@ -18,19 +14,10 @@ export async function action({request}: any) {
   
   try {
     if(await bcrypt.compare(password, user.Pass)) {
-      const cookieHeader = request.headers.get("Cookie");
-      const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
-      const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
-      
-      // Give them access token and refresh token      
-      accessTokenCookie.accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFETIME});
-      refreshTokenCookie.refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFETIME});
-      
+
+      const cookieHeaders = await GenerateAccessTokens(user);
       return data("400", {
-        headers: [
-          ["Set-Cookie", await accessTokenCookieManager.serialize(accessTokenCookie)],
-          ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
-        ]
+        headers: [...cookieHeaders]
       });
     } else {
       console.log("Unsuccessful login: Incorrect password entered!");
