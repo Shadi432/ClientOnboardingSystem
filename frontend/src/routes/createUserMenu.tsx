@@ -5,7 +5,7 @@ import { User, UserValidator } from "../components/types";
 import { useState } from "react";
 
 
-export async function action({ request }: any){
+export async function action({request} : any){
   let formData = await request.formData();
   let userLogin: User = {
     Username: formData.get("username"),

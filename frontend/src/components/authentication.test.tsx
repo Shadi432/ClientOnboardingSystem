@@ -2,25 +2,13 @@ import { expect, test } from "vitest";
 import { accessTokenCookieManager, GenerateAccessTokens, IsUserAuthenticated, Logout, refreshTokenCookieManager, UpdateAuthTokens, VerifyAccessToken } from "./authentication";
 import { HttpResponse } from "msw";
 import jwt from "jsonwebtoken";
-import { UserAuthenticationData, UserAuthenticationDataValidator } from "../components/types";
 import { User, UserValidator } from "./types";
 
 const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
 
-const ACCESS_TOKEN_COOKIE="eyJhY2Nlc3NUb2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpWYzJWeVNXUWlPallzSWxWelpYSnVZVzFsSWpvaWRHVnpkRlZ6WlhJaUxDSlFZWE56SWpvaUpESmlKREV3SkRocVdYVTFXbHBWU0RGUk5td3hSMnAxVVM1aFRrOXhNVkJVZUVkcVVXRnlkRWQ0T0V0TGVWa3hiVU5PWldKdlVVOURWMkpwSWl3aVJXMWhhV3dpT2lKdFlXaGthV0ptYjJaaGJtRkFaMjFoYVd3dVkyOXRJaXdpVlhObGNsUjVjR1VpT2lKVFpXTnlaWFJoY25raUxDSnBZWFFpT2pFM05EWTVOamt6TURjc0ltVjRjQ0k2TVRjME5qazJPVE0yTjMwLjRaRlJWWThSTlowMV9LdzQ1WElFOHJlaHY5VDZ0M1daMkZFSGZVa0N0cEkifQ%3D%3D";
-const REFRESH_TOKEN_COOKIE="eyJyZWZyZXNoVG9rZW4iOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKVmMyVnlTV1FpT2pZc0lsVnpaWEp1WVcxbElqb2lkR1Z6ZEZWelpYSWlMQ0pRWVhOeklqb2lKREppSkRFd0pEaHFXWFUxV2xwVlNERlJObXd4UjJwMVVTNWhUazl4TVZCVWVFZHFVV0Z5ZEVkNE9FdExlVmt4YlVOT1pXSnZVVTlEVjJKcElpd2lSVzFoYVd3aU9pSnRZV2hrYVdKbWIyWmhibUZBWjIxaGFXd3VZMjl0SWl3aVZYTmxjbFI1Y0dVaU9pSlRaV055WlhSaGNua2lMQ0pwWVhRaU9qRTNORFk1Tmprek1EY3NJbVY0Y0NJNk1UYzBOamsyT1RZd04zMC5tNTJ5RVU3LU9raGs5eVBFRnhwaG9nWHFFYjdTMzhESGZ5U0pocEhobkx3In0%3D";
-
-
 const MockUser: User = {
   Username: "MockUser",
-  Pass: "RandomPass",
-  Email: "MockEmail@gmail.com",
-  UserType: "Secretary"
-}
-
-const MockUser2: User = {
-  Username: "MockUse",
   Pass: "RandomPass",
   Email: "MockEmail@gmail.com",
   UserType: "Secretary"
