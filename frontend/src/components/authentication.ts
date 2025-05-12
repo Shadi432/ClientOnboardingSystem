@@ -1,32 +1,83 @@
+import jwt from "jsonwebtoken";
 import { createCookie } from "react-router";
 import { UserAuthenticationData, UserValidator, User } from "../components/types";
-import jwt from "jsonwebtoken";
+
 const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
-
-export const accessTokenCookieManager = createCookie("accessToken", { "httpOnly": true });
-export const refreshTokenCookieManager = createCookie("refreshToken", { "httpOnly": true });
-
 export const ACCESS_TOKEN_LIFETIME = "1m";
 export const REFRESH_TOKEN_LIFETIME = "5m";
 const SET_TOKEN_EXPIRED = "-1m";
 
+export const accessTokenCookieManager = createCookie("accessToken", { "httpOnly": true });
+export const refreshTokenCookieManager = createCookie("refreshToken", { "httpOnly": true });
 
+export async function IsUserAuthenticated(request: any): Promise<{ clientResponse: { success: boolean, user: User | null }, headers: any[] }>  {
+    // { user: user|null, verified: bool, setCookieHeaders = [[],[]] }
+  const userAuthentication: UserAuthenticationData = await VerifyAccessToken(request);
+
+  if (userAuthentication.success) {
+      if (userAuthentication.headersList){
+        return ({
+          clientResponse: { success: true, user: userAuthentication.user }, 
+          headers: userAuthentication.headersList
+        });
+      } else {
+      return ({
+        clientResponse: { success: true, user: userAuthentication.user },
+        headers: [],
+       });
+      }
+    } else {
+      if (userAuthentication.headersList) {
+        return {
+          clientResponse: { success: false, user: null },
+          headers: userAuthentication.headersList 
+          };
+      } else {
+        return {
+          clientResponse: { success: false, user: userAuthentication.user },
+          headers: [],
+        };
+      }
+  }
+}
+
+// Generates New Auth Tokens from Scratch
+export async function GenerateAccessTokens(user: User): Promise<any[]> {
+  // Give them access token and refresh tokens     
+  const accessTokenCookie = {
+    accessToken: jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFETIME})
+  };
+  const refreshTokenCookie = {
+    refreshToken: jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFETIME})
+  };
+
+  return([
+      ["Set-Cookie", await accessTokenCookieManager.serialize(accessTokenCookie)],
+      ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
+    ]);
+}
+
+
+// Are the current access tokens valid.
 export async function VerifyAccessToken(request: any): Promise<UserAuthenticationData> {
   const cookieHeader = request.headers.get("Cookie");
+  
   const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
   const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
+  
+  
 
   if (accessTokenCookie.accessToken == null){
     console.log("They do not have an access token!");
     const authData: UserAuthenticationData = { success: false, headersList: null, user: null};
     return authData;
   } 
-
+  
   try {
-    const user = await jwt.verify(accessTokenCookie.accessToken, ACCESS_TOKEN_SECRET);
+;    const user = await jwt.verify(accessTokenCookie.accessToken, ACCESS_TOKEN_SECRET);
     const validatedUser = UserValidator.safeParse(user);
-
+    
     if (validatedUser.success) {
       const authData: UserAuthenticationData = { success: true, headersList: null, user: validatedUser.data};
       return authData;
@@ -37,7 +88,7 @@ export async function VerifyAccessToken(request: any): Promise<UserAuthenticatio
   } catch (err) {
     // Generate a new access token from the refresh token
     if (err instanceof jwt.TokenExpiredError) {
-      const authenticationDetails = await GenerateNewAuthTokens(accessTokenCookie, refreshTokenCookie);
+      const authenticationDetails = await UpdateAuthTokens(accessTokenCookie, refreshTokenCookie);
       return authenticationDetails;
 
     // Been tampered with, invalidate the cookies so they're forced to log in again
@@ -58,7 +109,8 @@ export async function VerifyAccessToken(request: any): Promise<UserAuthenticatio
   return authData
 }
 
-async function GenerateNewAuthTokens(accessTokenCookie: any, refreshTokenCookie: any): Promise<UserAuthenticationData>{
+// Takes auth token values and check if they're still valid/refresh if necessary.
+export async function UpdateAuthTokens(accessTokenCookie: any, refreshTokenCookie: any): Promise<UserAuthenticationData>{
   let authenticationStatus: boolean = false;
   let headersList: any[] = [];
   let userObj: User | null = null;
@@ -95,8 +147,8 @@ async function GenerateNewAuthTokens(accessTokenCookie: any, refreshTokenCookie:
 
 export async function Logout(request: any): Promise<any>{
   const cookieHeader = request.headers.get("Cookie");
-  const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
-  const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
+  const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader);
+  const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader);
 
   accessTokenCookie.accessToken = jwt.sign({}, ACCESS_TOKEN_SECRET, { expiresIn: SET_TOKEN_EXPIRED});
   refreshTokenCookie.refreshToken = jwt.sign({}, REFRESH_TOKEN_SECRET, { expiresIn: SET_TOKEN_EXPIRED});
