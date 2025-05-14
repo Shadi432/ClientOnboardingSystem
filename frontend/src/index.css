@@ -111,3 +111,28 @@ button:focus-visible {
 .existingClientItem {
   color: black;
 }
+
+.requiredField {
+  color: red;
+  top: 25%;
+  position: fixed;
+}
+
+.nextButton {
+  position: absolute;
+  top: 85%;
+  left: 85%;
+}
+.previousButton {
+  position: absolute;
+  top: 85%;
+  left: 15%;
+}
+
+.dropdown {
+  display: block;
+}
+
+.formLabel {
+  margin-right: 25px;
+}

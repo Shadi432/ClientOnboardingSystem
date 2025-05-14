@@ -165,6 +165,17 @@ test("Logout: Happy Path", async () => {
   expect(() => jwt.verify(verificationRefreshToken.refreshToken, REFRESH_TOKEN_SECRET)).toThrowError("expired");
 })
 
+test("Testing Unpacking Objects", () => {
+  const testObj = {
+    1: 10,
+    2: 9,
+    3: 8,
+    4: 7,
+    5: 6
+  }
+  console.log(testObj)
+});
+
 async function GenerateTestAccessTokens(user: User, accessTokenLifetime: any, refreshTokenLifetime: any ): Promise<any[]> {
   // Give them access token and refresh tokens     
   const accessTokenCookie = {
@@ -179,3 +190,4 @@ async function GenerateTestAccessTokens(user: User, accessTokenLifetime: any, re
       ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
     ]);
 }
+
