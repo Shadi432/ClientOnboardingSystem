@@ -31,19 +31,21 @@ export async function action({request}: any) {
 
 function Login({ actionData }: any){
   const [showPassword, setShowPassword] = useState(false);
+
   return(
-      <>
-          <Form id="loginForm" action="" method="post">                
-              <span className="inputTitle"> Login </span>
-              <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
-              <input className="inputBox" name="password" type={showPassword ? "text" : "password" } placeholder="Enter Password"/>
-              <button type="button" onClick={() => {setShowPassword(!showPassword);}}> {showPassword ? "Hide Password" : "Show Password" } </button>
-              <button type="submit">Login</button>
-          </Form>
-          { actionData && actionData == "400" && <p> Logged in successfully! </p> }
-          { actionData && actionData == "500" &&  <p> Error whilst logging in </p> }
-      </>
+    <>
+      <Form id="loginForm" action="" method="post">                
+        <span className="inputTitle"> Login </span>
+        <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
+        <input className="inputBox" name="password" type={showPassword ? "text" : "password" } placeholder="Enter Password"/>
+        <button type="button" onClick={() => {setShowPassword(!showPassword);}}> {showPassword ? "Hide Password" : "Show Password" } </button>
+        <button type="submit">Login</button>
+      </Form>
+      { actionData && actionData == "400" &&  <p> Successfully logged in </p> }
+      { actionData && actionData == "500" && <p> Error whilst logging in </p> }
+    </>
   )
+  
 }
 
 export default Login
