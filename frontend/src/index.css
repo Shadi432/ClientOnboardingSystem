@@ -91,3 +91,23 @@ button:focus-visible {
 .inputTitle {
   margin-left: 35%;
 }
+
+#newClientButton {
+  margin-left: 10%;
+}
+
+#existingClientSelector {
+  margin-left: 50%;
+}
+
+#existingClientList {
+  background-color: aliceblue;
+  margin-left: 25%;
+  list-style-type: none;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.existingClientItem {
+  color: black;
+}
