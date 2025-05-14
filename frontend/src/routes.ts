@@ -8,7 +8,8 @@ export default [
     route("login", "./routes/login.tsx"),
     route("createUser", "./routes/createUserMenu.tsx"),
     route("logout", "./routes/logout.tsx"),
-    route("home", "./routes/home.tsx")
+    route("home", "./routes/home.tsx"),
+    route("onboardForm/:clientName?", "./routes/onboardForm.tsx")
   ]),
   route("authFail", "./routes/UnauthenticatedUser.tsx"),
 ] satisfies RouteConfig;
