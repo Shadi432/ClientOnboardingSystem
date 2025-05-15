@@ -17,8 +17,6 @@ export async function loader({ request }: any) {
 function App( { loaderData }: any) {
   let fetcher = useFetcher();
 
-
-
   return (
     <>
       <nav id="header">

@@ -2,32 +2,37 @@ import { IsUserAuthenticated } from "../../components/authentication";
 import { data, Outlet, useNavigate } from "react-router"
 import { useState } from "react"
 import { GetOnboardingData } from "../../components/database";
+import { User, UserValidator } from "../../components/types";
 
 const MAX_PAGES = 3
 
 export async function loader({ params, request }: any){
   const responseData = await IsUserAuthenticated(request);
-  
-  if (responseData.clientResponse.success){
-    const clientName = "TestClient"
-    const fakeClientName = "Bernard Arnault"
-    const jsonResult: any = await GetOnboardingData(fakeClientName);
-    if (jsonResult){
-      // return it as state in loaderData
-    } else {
-      // No existing data, blank record. return {} in loader data
-    }
+  let clientName = "";
 
-    if (params.clientName){
-      console.log("Params: ", params)
-
-    } else {
-      // Blank form is all they need
+  if (responseData.clientResponse.success){    
+    const currentUser: User = UserValidator.parse(responseData.clientResponse.user);
+    
+    if (params.clientName) {
+      clientName = params.clientName;
     }
+    // This has to check that the current user owns the data or then you can change the link and get any record returned.
+      const jsonResult: any = await GetOnboardingData(clientName, currentUser);
+      if (jsonResult.Owner && jsonResult.Owner != ""){
+        console.log("This happening?");
+        return data({...responseData.clientResponse, formState: jsonResult} , {
+          headers: [...responseData.headers],
+        });
+      } else {
+        // No existing data, blank record.
+        return data({...responseData.clientResponse, formState: {}} , {
+          headers: [...responseData.headers],
+        });
+      }
   }
-
-  return data(responseData.clientResponse, {
-    headers: [...responseData.headers],
+  // Unauthenticated client
+   return data({...responseData.clientResponse} , {
+        headers: [...responseData.headers],
   });
 }
 
@@ -36,10 +41,11 @@ export async function loader({ params, request }: any){
 // This will also have a complete button and whenever it's pressed it'll make sure the current page saves then it'll redirect you to the home page.
 // Will need to make sure that before any re-render that the data is saved so they don't lose data because of authentication
 function OnboardForm( { loaderData }: any ){
-  const [formState, updateFormState] = useState({});
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const navigate = useNavigate();
-
+  // Annoying because I'm trusting formState to be there and it won't be in the case of a authentication failure but it also won't be called in that case so it wouldn't error.
+  const [formState, updateFormState] = useState(loaderData.formState);
+  
   async function submitToDB(formState: {}){
     console.log(formState);
     
@@ -49,6 +55,7 @@ function OnboardForm( { loaderData }: any ){
   }
   
   if (loaderData.success){
+    // Has to be done here if not react is unsure how many hooks to render.
     return(
       <>
         <p className="requiredField">Fields marked with * are required</p>

@@ -33,11 +33,18 @@ export const UserAuthenticationDataValidator = z.object({
 export type UserAuthenticationData = z.infer<typeof UserAuthenticationDataValidator>;
 
 export const ClientFormDataValidator = z.object({
-  ClientName: z.string(requiredError)
+  ClientName: z.string()
                 .max(150, { message: "Client Name should be less than 150 characters long"}),
-  Owner: z.string(requiredError),
+  Owner: z.string(),
   Status: statusEnum,
+  name: z.string().min(100),
   FormState: z.object({
-    // 
-  })
-})
+    ClientType:  z.enum(["Individual", "Company"]),
+    Office: z.enum(["Norwich"]),
+    Department: z.enum(["Business"]),
+    Partner: z.string(),
+    Manager: z.string(),
+  }).partial()
+}).required({ClientName: true, Owner: true, Status: true});
+
+export type ClientFormData = z.infer<typeof ClientFormDataValidator>;

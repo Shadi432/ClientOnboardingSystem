@@ -55,9 +55,11 @@ function Home( { loaderData }: any) {
                         </div>
                     </>
                 )
+            default:
+                return (<p>Please log in to access this page.</p>)
         }
     }
-    return (<p>Please log in to access this page.</p>)
+    
 }
 
 export default Home

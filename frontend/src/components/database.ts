@@ -1,5 +1,5 @@
 import tedious, { Connection, Request } from "tedious";
-import {  User } from "./types";
+import {  ClientFormData, ClientFormDataValidator, User } from "./types";
 
 
 const CONFIG: tedious.ConnectionConfiguration = {
@@ -97,12 +97,11 @@ export function CreateUser(user: User): Promise<Error | null>{
   });
 }
 
-export async function GetOnboardingData(clientName: string){
+export async function GetOnboardingData(clientName: string, owningUser: User){
   return new Promise((resolve) => {
     const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE ClientName = '${clientName}';`;
 
-    let result = "test result";
-    let result2 = "";
+    let clientData = {} as ClientFormData;
 
     // DB Connection
     let connection = new Connection(CONFIG);
@@ -111,7 +110,7 @@ export async function GetOnboardingData(clientName: string){
         console.log(err);
       } else {
         connection.close();        
-        resolve(result2);
+        resolve(clientData);
       }
     });
 
@@ -123,13 +122,32 @@ export async function GetOnboardingData(clientName: string){
     });
 
     dbRequest.on("row", function(columns) {
-      columns.forEach(function(column: any ){   
+      columns.forEach(function(column: {metadata: {colName: string}, value: string} ){   
         switch(column.metadata.colName){
           case "ClientName":
-            result = column.value;
+            clientData.ClientName = column.value;
+            break;
+          case "Owner":
+            if (owningUser.Username == column.value){
+              clientData.Owner = column.value;
+            } else {
+              clientData.Owner = "";
+              console.log("This user doesn't own this record.");
+            }
+            break;
+          case "Status":
+            const isValidStatusOption = ClientFormDataValidator.shape.Status.safeParse(column.value);
+            
+            if (isValidStatusOption.success) {
+              clientData.Status = isValidStatusOption.data;
+            }
             break;
           case "FormState":
-            result2 = column.value;
+            const formState = JSON.parse(column.value);
+            const isValidFormState = ClientFormDataValidator.shape.FormState.safeParse(formState);
+            if (isValidFormState.success){
+              clientData.FormState = formState;
+            }
             break;
         }
       });
