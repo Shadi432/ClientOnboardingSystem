@@ -96,3 +96,50 @@ export function CreateUser(user: User): Promise<Error | null>{
     connection.connect();
   });
 }
+
+export async function GetOnboardingData(clientName: string){
+  return new Promise((resolve) => {
+    const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE ClientName = '${clientName}';`;
+
+    let result = "test result";
+    let result2 = "";
+
+    // DB Connection
+    let connection = new Connection(CONFIG);
+    let dbRequest = new Request(GET_CLIENT_DATA_QUERY, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        connection.close();        
+        resolve(result2);
+      }
+    });
+
+    connection.on("connect", function(err){
+      if (err) {
+        console.log("Error: ", err);
+      }
+      connection.execSql(dbRequest);
+    });
+
+    dbRequest.on("row", function(columns) {
+      columns.forEach(function(column: any ){   
+        switch(column.metadata.colName){
+          case "ClientName":
+            result = column.value;
+            break;
+          case "FormState":
+            result2 = column.value;
+            break;
+        }
+      });
+    });
+
+    connection.connect();
+  });
+}
+// Needs to take the formState as a dictionary and overwrite the entire record if it already exists
+// If the entire record doesn't exist then 
+export async function submitOnboardingData(){
+
+}

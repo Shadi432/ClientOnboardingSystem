@@ -1,6 +1,7 @@
 import { IsUserAuthenticated } from "../../components/authentication";
 import { data, Outlet, useNavigate } from "react-router"
 import { useState } from "react"
+import { GetOnboardingData } from "../../components/database";
 
 const MAX_PAGES = 3
 
@@ -8,10 +9,18 @@ export async function loader({ params, request }: any){
   const responseData = await IsUserAuthenticated(request);
   
   if (responseData.clientResponse.success){
+    const clientName = "TestClient"
+    const fakeClientName = "Bernard Arnault"
+    const jsonResult: any = await GetOnboardingData(fakeClientName);
+    if (jsonResult){
+      // return it as state in loaderData
+    } else {
+      // No existing data, blank record. return {} in loader data
+    }
+
     if (params.clientName){
-      // Do processing to get and return the existing data to the client to continue the form where they left off.
-      // This should be stored in the cookies so that they can continue through the pages
       console.log("Params: ", params)
+
     } else {
       // Blank form is all they need
     }
@@ -33,7 +42,7 @@ function OnboardForm( { loaderData }: any ){
 
   async function submitToDB(formState: {}){
     console.log(formState);
-
+    
     // We want to use the fields in the form state and verify them using zod.
     // If they pass the zod validation then they're ready to be submitted
     // We want them to match the fields in the database alongside some extra data we can put in here.

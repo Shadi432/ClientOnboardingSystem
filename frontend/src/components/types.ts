@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO"])
+const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO"]);
+const statusEnum = z.enum(["In Progress", "Pending Review", "Completed"]);
 
 const requiredError = {
   required_error: "This is a required field",
@@ -30,3 +31,13 @@ export const UserAuthenticationDataValidator = z.object({
 })
 
 export type UserAuthenticationData = z.infer<typeof UserAuthenticationDataValidator>;
+
+export const ClientFormDataValidator = z.object({
+  ClientName: z.string(requiredError)
+                .max(150, { message: "Client Name should be less than 150 characters long"}),
+  Owner: z.string(requiredError),
+  Status: statusEnum,
+  FormState: z.object({
+    // 
+  })
+})
