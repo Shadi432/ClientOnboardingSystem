@@ -44,7 +44,7 @@ function Home( { loaderData }: any) {
             case "Secretary":
                 return(
                     <>
-                        <Link to="/onboardForm" id="newClientButton">Onboard New Client</Link>
+                        <Link to="/onboardForm/page1" id="newClientButton">Onboard New Client</Link>
                         
                         <div id="existingClientSelector">
                             <p>Continue Onboarding an Existing Client</p>
