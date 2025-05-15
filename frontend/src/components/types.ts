@@ -37,7 +37,6 @@ export const ClientFormDataValidator = z.object({
                 .max(150, { message: "Client Name should be less than 150 characters long"}),
   Owner: z.string(),
   Status: statusEnum,
-  name: z.string().min(100),
   FormState: z.object({
     ClientType:  z.enum(["Individual", "Company"]),
     Office: z.enum(["Norwich"]),
