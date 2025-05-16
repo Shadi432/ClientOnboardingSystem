@@ -11,13 +11,11 @@ export default [
     route("createUser", "./routes/createUserMenu.tsx"),
     route("logout", "./routes/logout.tsx"),
     route("home", "./routes/home.tsx"),
-    ...prefix("onboardForm", [
-      layout("./routes/onboardForm/formParent.tsx", [
-        route(":clientName?/page1", "./routes/onboardForm/page1.tsx"),
-        route(":clientName?/page2", "./routes/onboardForm/page2.tsx"),
-        route(":clientName?/page3", "./routes/onboardForm/page3.tsx")
-      ]),
-    ])
+    route("onboardForm", "./routes/onboardForm/formParent.tsx", [
+      route(":clientName?/page1", "./routes/onboardForm/page1.tsx"),
+      route(":clientName?/page2", "./routes/onboardForm/page2.tsx"),
+      route(":clientName?/page3", "./routes/onboardForm/page3.tsx")
+    ]),
     // route("onboardForm/:clientName?/page3", "./routes/onboardForm/page3.tsx")
   ]),
   route("authFail", "./routes/UnauthenticatedUser.tsx"),

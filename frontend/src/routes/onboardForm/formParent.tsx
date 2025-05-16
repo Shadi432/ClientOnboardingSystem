@@ -1,10 +1,20 @@
 import { IsUserAuthenticated } from "../../components/authentication";
-import { data, Outlet, useNavigate } from "react-router"
+import { data, Outlet, useFetcher, useNavigate } from "react-router"
 import { useState } from "react"
-import { GetOnboardingData } from "../../components/database";
+import { CreateNewClient, GetOnboardingData } from "../../components/database";
 import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
 const MAX_PAGES = 3
+
+
+export async function action({ request }: any){
+  const formData = await request.formData()
+  let formState = formData.get("formState");
+  const result = await CreateNewClient(JSON.parse(formState));
+  if ( result != null){
+    console.log(`DB Error: ${result}`);
+  }
+}
 
 export async function loader({ params, request }: any){
   const responseData = await IsUserAuthenticated(request);
@@ -35,38 +45,45 @@ export async function loader({ params, request }: any){
   });
 }
 
+function processFormState(formState: any): {success: boolean, error: string}{
+
+  const check = ClientFormDataValidator.safeParse(formState);
+
+  /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
+    against the validator but we need to actually check them and have it be non-negotiable so they're valid befopre
+    they're stored in the database.
+  */
+  const checkFormData: any = ClientFormDataValidator.shape.FormState.safeParse(formState.FormState);
+
+  if (check.success && checkFormData.success){
+    // let error = CreateNewClient(formState);
+    let error = null;
+    if (error != null) {
+      return {success: false, error: "error with the database"}
+    }
+    return {success: true, error: ""}
+  } else if (!check.success){
+    return {success: false, error: check.error.message}
+  }
+  
+  return {success: false, error: checkFormData.error.message}
+}
+
 // This should have stuff like the forwards and back arrows etc, save button, etc.
 // If save button is pressed it needs to send an action to the relevant page so that it takes data and uploads it to the db.
 // This will also have a complete button and whenever it's pressed it'll make sure the current page saves then it'll redirect you to the home page.
 // Will need to make sure that before any re-render that the data is saved so they don't lose data because of authentication
-function OnboardForm( { loaderData }: any ){
+function FormParent( { loaderData }: any ){
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const navigate = useNavigate();
   // Annoying because I'm trusting formState to be there and it won't be in the case of a authentication failure but it also won't be called in that case so it wouldn't error.
   const [formState, updateFormState] = useState(loaderData.formState);
   const [canProceed, setCanProceed] = useState(true); 
   let errMessage = "";
+
+  let fetcher = useFetcher();
   
-  function processFormState(formState: any): {success: boolean, error: string}{
 
-    const check = ClientFormDataValidator.safeParse(formState);
-
-    /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
-      against the validator but we need to actually check them and have it be non-negotiable so they're valid befopre
-      they're stored in the database.
-    */
-    const checkFormData: any = ClientFormDataValidator.shape.FormState.safeParse(formState.FormState);
-
-    if (check.success && checkFormData.success){
-      // console.log(loaderData.formState)
-      
-      return {success: true, error: ""}
-    } else if (!check.success){
-      return {success: false, error: check.error.message}
-    }
-    
-    return {success: false, error: checkFormData.error.message}
-  }
   
   if (loaderData.success){
     // Has to be done here if not react is unsure how many hooks to render.
@@ -84,6 +101,7 @@ function OnboardForm( { loaderData }: any ){
             const checkDetails = processFormState(formState);
             if (checkDetails.success) {
               setCanProceed(true);
+              fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
               setCurrentPageNum(currentPageNum + 1); 
               navigate(`/onboardForm/page${currentPageNum+1}`)
             } else {
@@ -108,4 +126,4 @@ function OnboardForm( { loaderData }: any ){
   return (<p>Please log in to access this page</p>)
 }
 
-export default OnboardForm
+export default FormParent

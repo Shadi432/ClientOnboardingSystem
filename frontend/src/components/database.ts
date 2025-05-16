@@ -156,8 +156,32 @@ export async function GetOnboardingData(clientName: string, owningUser: User){
     connection.connect();
   });
 }
-// Needs to take the formState as a dictionary and overwrite the entire record if it already exists
-// If the entire record doesn't exist then 
-export async function submitOnboardingData(){
 
+export async function CreateNewClient(formState: any){
+  return new Promise((resolve) => {
+    const CREATE_CLIENT_QUERY = `DELETE FROM ClientForms WHERE ClientName = '${formState.ClientName}'; INSERT INTO ClientForms ("ClientName", "Owner", "Status", "FormState") VALUES ('${formState.ClientName}', '${formState.Owner}', '${formState.Status}', '${JSON.stringify(formState.FormState)}');`;
+
+    // DB Connection
+    let connection = new Connection(CONFIG);
+    
+    let dbRequest = new Request(CREATE_CLIENT_QUERY, function(err) {
+      if (err) {
+        console.log(err);
+        resolve(err);
+      } else {
+        connection.close();
+        resolve(null);
+      }
+    });
+
+    connection.on("connect", function(err){
+      if (err) {
+        console.log("Error: ", err);
+      }
+      
+      connection.execSql(dbRequest);
+    });
+
+    connection.connect();
+  });
 }
