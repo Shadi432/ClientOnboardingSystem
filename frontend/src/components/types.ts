@@ -34,6 +34,7 @@ export type UserAuthenticationData = z.infer<typeof UserAuthenticationDataValida
 
 export const ClientFormDataValidator = z.object({
   ClientName: z.string()
+                .min(3, { message: "Client Name should be more than 3 characters"})
                 .max(150, { message: "Client Name should be less than 150 characters long"}),
   Owner: z.string(),
   Status: statusEnum,
@@ -42,7 +43,9 @@ export const ClientFormDataValidator = z.object({
     Office: z.enum(["Norwich"]),
     Department: z.enum(["Business"]),
     Partner: z.string(),
-    Manager: z.string(),
+    Manager: z.string().min(10).or(z.string().max(0)),
+    CaseWorker: z.string(),
+    Title: z.enum(["Mr", "Mrs", "Miss", "Master", "Dr"]),
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});
 

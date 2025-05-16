@@ -8,7 +8,7 @@ import { ClientFormData } from "../../components/types";
 // Will need to make sure that before any re-render that the data is saved so they don't lose data because of authentication
 function OnboardForm( ){
   // All state passed into this, when button is clicked it all goes to that for processing.
-  const formStateHandler: { formState: {}, updateFormState: Function} = useOutletContext();
+  const formStateHandler: { formState: any, updateFormState: Function} = useOutletContext();
   const updateFormState = formStateHandler.updateFormState;
   const formState = formStateHandler.formState;
 
@@ -16,6 +16,8 @@ function OnboardForm( ){
     <>
       <p className="requiredField">Fields marked with * are required</p>
       <Form action="" method="post">
+        <span>Client Name: </span>
+        <input name="ClientName" defaultValue={formState["ClientName"]} onChange={(e) => {formState["ClientName"] = e.target.value; updateFormState(formState)}}></input>
         <Dropdown name="ClientType" label="Client Type:" options={["Individual", "Company"]}  updateState={updateFormState} formState={formState} required={true}/>
         {/* Office */}
         <Dropdown name="Office" label="Office:" options={["Norwich"]} updateState={updateFormState} formState={formState} required={true} />
@@ -26,7 +28,7 @@ function OnboardForm( ){
 
         <InputField name="Manager" label="Manager:" updateState={updateFormState} formState={formState}/> 
 
-        <InputField name="caseWorker" label="Case Worker:" updateState={updateFormState} formState={formState}/>
+        <InputField name="CaseWorker" label="Case Worker:" updateState={updateFormState} formState={formState}/>
 
       </Form>
     </>

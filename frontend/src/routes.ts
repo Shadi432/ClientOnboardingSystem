@@ -14,8 +14,8 @@ export default [
     ...prefix("onboardForm", [
       layout("./routes/onboardForm/formParent.tsx", [
         route(":clientName?/page1", "./routes/onboardForm/page1.tsx"),
-        route("/page2", "./routes/onboardForm/page2.tsx"),
-        route("/page3", "./routes/onboardForm/page3.tsx")
+        route(":clientName?/page2", "./routes/onboardForm/page2.tsx"),
+        route(":clientName?/page3", "./routes/onboardForm/page3.tsx")
       ]),
     ])
     // route("onboardForm/:clientName?/page3", "./routes/onboardForm/page3.tsx")

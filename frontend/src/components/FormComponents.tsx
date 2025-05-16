@@ -1,6 +1,6 @@
 
 function onInputChanged(e: any, name: string, updateState: any, formState: any){
-  formState[name] = e.target.value
+  formState.FormState[name] = e.target.value
   updateState(formState)
 }
 
@@ -10,16 +10,11 @@ export function Dropdown({ name, options, label, updateState, formState, require
     label = label +  "*"
   }
 
-  let defaultValue = ""
-  if (formState.FormState){
-    defaultValue = formState.FormState[name]
-  }
-
   return (
     <div className="dropdown">
-      <span className="formLabel">{ label } </span>
-      <select  name={name} defaultValue={ defaultValue } onChange={e => onInputChanged(e, name, updateState, formState) }>
-        { options.map((option: string) => <option key={ option } value={ option }>{ option } </option>) }
+      <span className="formLabel">{ label } </span>      
+      <select  name={name} value={formState.FormState[name]} onChange={e => onInputChanged(e, name, updateState, formState) }>
+        { options.map((option: string) => <option key={ option }>{ option } </option>) }
       </select>
     </div>
   )

@@ -2,7 +2,7 @@ import { IsUserAuthenticated } from "../../components/authentication";
 import { data, Outlet, useNavigate } from "react-router"
 import { useState } from "react"
 import { GetOnboardingData } from "../../components/database";
-import { User, UserValidator } from "../../components/types";
+import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
 const MAX_PAGES = 3
 
@@ -19,13 +19,12 @@ export async function loader({ params, request }: any){
     // This has to check that the current user owns the data or then you can change the link and get any record returned.
       const jsonResult: any = await GetOnboardingData(clientName, currentUser);
       if (jsonResult.Owner && jsonResult.Owner != ""){
-        console.log("This happening?");
         return data({...responseData.clientResponse, formState: jsonResult} , {
           headers: [...responseData.headers],
         });
       } else {
         // No existing data, blank record.
-        return data({...responseData.clientResponse, formState: {}} , {
+        return data({...responseData.clientResponse, formState: {ClientName: "", Owner: currentUser.Username, Status: "In Progress", FormState: {}}} , {
           headers: [...responseData.headers],
         });
       }
@@ -45,13 +44,28 @@ function OnboardForm( { loaderData }: any ){
   const navigate = useNavigate();
   // Annoying because I'm trusting formState to be there and it won't be in the case of a authentication failure but it also won't be called in that case so it wouldn't error.
   const [formState, updateFormState] = useState(loaderData.formState);
+  const [canProceed, setCanProceed] = useState(true); 
+  let errMessage = "";
   
-  async function submitToDB(formState: {}){
-    console.log(formState);
+  function processFormState(formState: any): {success: boolean, error: string}{
+
+    const check = ClientFormDataValidator.safeParse(formState);
+
+    /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
+      against the validator but we need to actually check them and have it be non-negotiable so they're valid befopre
+      they're stored in the database.
+    */
+    const checkFormData: any = ClientFormDataValidator.shape.FormState.safeParse(formState.FormState);
+
+    if (check.success && checkFormData.success){
+      // console.log(loaderData.formState)
+      
+      return {success: true, error: ""}
+    } else if (!check.success){
+      return {success: false, error: check.error.message}
+    }
     
-    // We want to use the fields in the form state and verify them using zod.
-    // If they pass the zod validation then they're ready to be submitted
-    // We want them to match the fields in the database alongside some extra data we can put in here.
+    return {success: false, error: checkFormData.error.message}
   }
   
   if (loaderData.success){
@@ -60,12 +74,34 @@ function OnboardForm( { loaderData }: any ){
       <>
         <p className="requiredField">Fields marked with * are required</p>
 
-          <Outlet context={{formState: formState, updateFormState: updateFormState}} />
-          {/* These buttons need to make the call to store the current fields in the database. */}
-          
-          {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => {submitToDB(formState); setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
-          {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => {submitToDB(formState); setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`)}}>Next</button> }
-          {currentPageNum == MAX_PAGES && <button> Finish </button>}
+        <Outlet context={{formState: formState, updateFormState: updateFormState}} />
+        {/* These buttons need to make the call to store the current fields in the database. */}
+        {/* { console.log(formState)} */}
+
+        { !canProceed && <p> You need to complete required fields before proceeding. </p> }
+        {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => {processFormState(formState); setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
+        {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => {
+            const checkDetails = processFormState(formState);
+            if (checkDetails.success) {
+              setCanProceed(true);
+              setCurrentPageNum(currentPageNum + 1); 
+              navigate(`/onboardForm/page${currentPageNum+1}`)
+            } else {
+              setCanProceed(false);
+              errMessage = checkDetails.error;
+            }
+          }
+        }>Next</button> }
+        {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
+            const checkDetails = processFormState(formState);
+            if (checkDetails.success) {
+              setCanProceed(true);
+              navigate(`/home`)
+            } else {
+              setCanProceed(false);
+              errMessage = checkDetails.error;
+            }
+          }}> Finish </button>}
       </>
     )
   } 
