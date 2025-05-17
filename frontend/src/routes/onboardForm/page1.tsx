@@ -1,6 +1,5 @@
 import {Form, useOutletContext } from "react-router";
 import { Dropdown, InputField }  from "../../components/FormComponents";
-import { ClientFormData } from "../../components/types";
 
 // This should have stuff like the forwards and back arrows etc, save button, etc.
 // If save button is pressed it needs to send an action to the relevant page so that it takes data and uploads it to the db.

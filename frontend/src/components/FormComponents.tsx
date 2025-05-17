@@ -13,7 +13,7 @@ export function Dropdown({ name, options, label, updateState, formState, require
   return (
     <div className="dropdown">
       <span className="formLabel">{ label } </span>      
-      <select  name={name} value={formState.FormState[name]} onChange={e => onInputChanged(e, name, updateState, formState) }>
+      <select  name={name} defaultValue={formState.FormState[name]} onChange={e => onInputChanged(e, name, updateState, formState) }>
         { options.map((option: string) => <option key={ option }>{ option } </option>) }
       </select>
     </div>

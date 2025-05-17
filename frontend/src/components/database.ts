@@ -97,7 +97,67 @@ export function CreateUser(user: User): Promise<Error | null>{
   });
 }
 
-export async function GetOnboardingData(clientName: string, owningUser: User){
+export async function GetAllClientFormsByOwner(owningUser: User){
+  return new Promise((resolve => {
+    const GET_ALL_CLIENTS_QUERY = `SELECT * FROM ClientForms WHERE Owner = '${owningUser.Username}';`;
+
+    let clientFormList: any = []
+
+    let connection = new Connection(CONFIG);
+    let dbRequest = new Request(GET_ALL_CLIENTS_QUERY, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        connection.close();        
+        resolve(clientFormList);
+      }
+    });
+
+    connection.on("connect", function(err){
+      if (err) {
+        console.log("Error: ", err);
+      }
+      connection.execSql(dbRequest);
+    });
+
+    dbRequest.on("row", function(columns) {
+      let clientData = {} as ClientFormData
+      columns.forEach(function(column: {metadata: {colName: string}, value: string} ){   
+        switch(column.metadata.colName){
+          case "ClientName":
+            clientData.ClientName = column.value;
+            break;
+          case "Owner":
+            if (owningUser.Username == column.value){
+              clientData.Owner = column.value;
+            } else {
+              clientData.Owner = "";
+              console.log("This user doesn't own this record.");
+            }
+            break;
+          case "Status":
+            const isValidStatusOption = ClientFormDataValidator.shape.Status.safeParse(column.value);
+            
+            if (isValidStatusOption.success) {
+              clientData.Status = isValidStatusOption.data;
+            }
+            break;
+          case "FormState":
+            const formState = JSON.parse(column.value);
+            const isValidFormState = ClientFormDataValidator.shape.FormState.safeParse(formState);
+            if (isValidFormState.success){
+              clientData.FormState = formState;
+            }
+            break;
+        }
+      });
+      clientFormList.push(clientData);
+    });
+    connection.connect();
+  }));
+}
+
+export async function GetClientFormByName(clientName: string, owningUser: User){
   return new Promise((resolve) => {
     const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE ClientName = '${clientName}';`;
 

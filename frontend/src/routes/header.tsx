@@ -24,7 +24,7 @@ function App( { loaderData }: any) {
           { loaderData.success && loaderData.user && <NavLink to="home"> Home </NavLink> }
           <NavLink to="login"> Login </NavLink>
           { loaderData && loaderData.user && loaderData.user.UserType == "Admin" && <Link to="createUser"> Create User </Link> }
-          { loaderData && loaderData.user && <button type="button" onClick={() => { fetcher.submit({ title: "New Title"}, { action: "logout", method: "post" }); console.log("logout complete?"); } }> Logout </button> }
+          { loaderData && loaderData.user && <button type="button" onClick={() => { fetcher.submit({}, { action: "logout", method: "post" }); } }> Logout </button> }
       </nav>
       <Outlet />
     </>

@@ -1,7 +1,7 @@
 import { IsUserAuthenticated } from "../../components/authentication";
 import { data, Outlet, useFetcher, useNavigate } from "react-router"
 import { useState } from "react"
-import { CreateNewClient, GetOnboardingData } from "../../components/database";
+import { CreateNewClient, GetClientFormByName } from "../../components/database";
 import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
 const MAX_PAGES = 3
@@ -27,7 +27,7 @@ export async function loader({ params, request }: any){
       clientName = params.clientName;
     }
     // This has to check that the current user owns the data or then you can change the link and get any record returned.
-      const jsonResult: any = await GetOnboardingData(clientName, currentUser);
+      const jsonResult: any = await GetClientFormByName(clientName, currentUser);
       if (jsonResult.Owner && jsonResult.Owner != ""){
         return data({...responseData.clientResponse, formState: jsonResult} , {
           headers: [...responseData.headers],
@@ -46,7 +46,6 @@ export async function loader({ params, request }: any){
 }
 
 function processFormState(formState: any): {success: boolean, error: string}{
-
   const check = ClientFormDataValidator.safeParse(formState);
 
   /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
@@ -82,7 +81,6 @@ function FormParent( { loaderData }: any ){
   let errMessage = "";
 
   let fetcher = useFetcher();
-  
 
   
   if (loaderData.success){
@@ -95,7 +93,7 @@ function FormParent( { loaderData }: any ){
         {/* These buttons need to make the call to store the current fields in the database. */}
         {/* { console.log(formState)} */}
 
-        { !canProceed && <p> You need to complete required fields before proceeding. </p> }
+        { !canProceed && <p> You need to complete required fields before proceeding. Message: {errMessage} </p> }
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => {processFormState(formState); setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
         {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => {
             const checkDetails = processFormState(formState);
