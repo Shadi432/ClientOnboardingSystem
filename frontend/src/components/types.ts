@@ -34,8 +34,8 @@ export type UserAuthenticationData = z.infer<typeof UserAuthenticationDataValida
 
 export const ClientFormDataValidator = z.object({
   ClientName: z.string()
-                .min(3, { message: "Client Name should be more than 3 characters"})
-                .max(150, { message: "Client Name should be less than 150 characters long"}),
+                .min(3)
+                .max(150),
   Owner: z.string(),
   Status: statusEnum,
   FormState: z.object({

@@ -45,27 +45,27 @@ export async function loader({ params, request }: any){
   });
 }
 
-function processFormState(formState: any): {success: boolean, error: string}{
-  const check = ClientFormDataValidator.safeParse(formState);
+function formStateValidator(formState: any): {headerCheck: boolean, contentCheck: boolean, errorList: string[]}{
+  const clientNameCheck = ClientFormDataValidator.shape.ClientName.safeParse(formState.ClientName);
 
+  const formDataCheck: any = ClientFormDataValidator.shape.FormState.required().safeParse(formState.FormState);
   /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
     against the validator but we need to actually check them and have it be non-negotiable so they're valid befopre
     they're stored in the database.
   */
-  const checkFormData: any = ClientFormDataValidator.shape.FormState.safeParse(formState.FormState);
 
-  if (check.success && checkFormData.success){
-    // let error = CreateNewClient(formState);
-    let error = null;
-    if (error != null) {
-      return {success: false, error: "error with the database"}
-    }
-    return {success: true, error: ""}
-  } else if (!check.success){
-    return {success: false, error: check.error.message}
+  let errorList: string[] = [];
+
+  if (!clientNameCheck.success){
+    errorList.push(`ClientName: ${clientNameCheck.error.errors[0].message}`);
   }
   
-  return {success: false, error: checkFormData.error.message}
+  if (!formDataCheck.success){
+    formDataCheck.error.errors.map((error: any) => errorList.push(`${error.path[0]}: ${error.message}`));
+  }
+  
+
+  return {headerCheck: clientNameCheck.success, contentCheck: formDataCheck.success, errorList: errorList};
 }
 
 // This should have stuff like the forwards and back arrows etc, save button, etc.
@@ -78,7 +78,7 @@ function FormParent( { loaderData }: any ){
   // Annoying because I'm trusting formState to be there and it won't be in the case of a authentication failure but it also won't be called in that case so it wouldn't error.
   const [formState, updateFormState] = useState(loaderData.formState);
   const [canProceed, setCanProceed] = useState(true); 
-  let errMessage = "";
+  const [errList, setErrList] = useState([""]);
 
   let fetcher = useFetcher();
 
@@ -90,32 +90,36 @@ function FormParent( { loaderData }: any ){
         <p className="requiredField">Fields marked with * are required</p>
 
         <Outlet context={{formState: formState, updateFormState: updateFormState}} />
-        {/* These buttons need to make the call to store the current fields in the database. */}
-        {/* { console.log(formState)} */}
 
-        { !canProceed && <p> You need to complete required fields before proceeding. Message: {errMessage} </p> }
-        {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => {processFormState(formState); setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
-        {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => {
-            const checkDetails = processFormState(formState);
-            if (checkDetails.success) {
+        {/* Div is for styling purposes use it well. */}
+        <div>
+          { !canProceed && errList.map((err) => <p style={{display: "block"}} key={err}> {err} </p>) }
+        </div>
+        {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
+        {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+        
+        <button className="saveButton" type="button" onClick={() => {
+          const checkDetails = formStateValidator(formState);
+          if (checkDetails.headerCheck){
+            setCanProceed(true);
+            fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
+            navigate(`/home`);
+          } else {
+            setCanProceed(false);
+            setErrList(checkDetails.errorList);
+          }
+        } }>Save and Quit</button>
+
+        {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
+            const checkDetails = formStateValidator(formState);
+            if (checkDetails.headerCheck && checkDetails.contentCheck) {
+              console.log("Here??")
               setCanProceed(true);
               fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
-              setCurrentPageNum(currentPageNum + 1); 
-              navigate(`/onboardForm/page${currentPageNum+1}`)
-            } else {
-              setCanProceed(false);
-              errMessage = checkDetails.error;
-            }
-          }
-        }>Next</button> }
-        {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
-            const checkDetails = processFormState(formState);
-            if (checkDetails.success) {
-              setCanProceed(true);
               navigate(`/home`)
             } else {
               setCanProceed(false);
-              errMessage = checkDetails.error;
+              setErrList(checkDetails.errorList);
             }
           }}> Finish </button>}
       </>
