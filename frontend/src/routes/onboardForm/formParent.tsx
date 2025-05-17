@@ -29,6 +29,7 @@ export async function loader({ params, request }: any){
     // This has to check that the current user owns the data or then you can change the link and get any record returned.
       const jsonResult: any = await GetClientFormByName(clientName, currentUser);
       if (jsonResult.Owner && jsonResult.Owner != ""){
+        // console.log(jsonResult);
         return data({...responseData.clientResponse, formState: jsonResult} , {
           headers: [...responseData.headers],
         });

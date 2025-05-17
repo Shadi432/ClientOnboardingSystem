@@ -136,3 +136,7 @@ button:focus-visible {
 .formLabel {
   margin-right: 25px;
 }
+
+.dateField {
+  display: block;
+}
