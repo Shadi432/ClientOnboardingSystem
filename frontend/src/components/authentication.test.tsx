@@ -4,13 +4,9 @@ import { HttpResponse } from "msw";
 import jwt from "jsonwebtoken";
 import { User, UserValidator } from "./types";
 
-<<<<<<< Updated upstream
-const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
-const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
-=======
+
 const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET || "TEST SECRET";
 const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET || "TEST SECRET";
->>>>>>> Stashed changes
 
 const MockUser: User = {
   Username: "MockUser",
