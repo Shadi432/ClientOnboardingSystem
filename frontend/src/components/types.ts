@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO"])
+const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO"]);
+const statusEnum = z.enum(["In Progress", "Pending Review", "Completed"]);
 
 const requiredError = {
   required_error: "This is a required field",
@@ -30,3 +31,36 @@ export const UserAuthenticationDataValidator = z.object({
 })
 
 export type UserAuthenticationData = z.infer<typeof UserAuthenticationDataValidator>;
+
+// Optional Dates aren't kept in here because I can't validate them to be undefined
+export const ClientFormDataValidator = z.object({
+  ClientName: z.string()
+                .min(3)
+                .max(150),
+  Owner: z.string(),
+  Status: statusEnum,
+  FormState: z.object({
+    ClientType:  z.enum(["Individual", "Company"]),
+    Office: z.enum(["Norwich"]),
+    Department: z.enum(["Business"]),
+    Partner: z.string().max(50),
+    Manager: z.string().max(30).or(z.string().max(0)),
+    CaseWorker: z.string().max(30).or(z.string().max(0)),
+    Title: z.enum(["Mr", "Mrs", "Miss", "Master", "Dr"]),
+    FirstName: z.string().min(2).max(50),
+    MiddleName: z.string().min(2).max(50).or(z.string().max(0)),
+    LastName: z.string().min(2).max(50),
+    Salutation: z.string().max(50).or(z.string().max(0)),
+    Gender: z.enum(["Man", "Woman", "Non-Binary", "N/A"]),
+    AddressLine1: z.string().min(5).max(100),
+    AddressLine2: z.string().min(5).max(100).or(z.string().max(0)),
+    Town: z.string().min(2).max(50),
+    County: z.string().min(2).max(50).or(z.string().max(0)),
+    Country: z.string().min(2).max(30),
+    Postcode: z.string().min(4).max(20),
+    DateOfBirth: z.string().datetime().or(z.date().max(new Date())),
+    DOD: z.string().datetime().or(z.date().max(new Date())).or(z.string().max(0)).nullable(),
+  }).partial()
+}).required({ClientName: true, Owner: true, Status: true});
+
+export type ClientFormData = z.infer<typeof ClientFormDataValidator>;

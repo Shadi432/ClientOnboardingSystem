@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { accessTokenCookieManager, GenerateAccessTokens, IsUserAuthenticated, Logout, refreshTokenCookieManager, UpdateAuthTokens, VerifyAccessToken } from "./authentication";
+import { accessTokenCookieManager, GenerateAccessTokens, IsUserAuthenticated, Logout, refreshTokenCookieManager } from "./authentication";
 import { HttpResponse } from "msw";
 import jwt from "jsonwebtoken";
 import { User, UserValidator } from "./types";
@@ -179,3 +179,4 @@ async function GenerateTestAccessTokens(user: User, accessTokenLifetime: any, re
       ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
     ]);
 }
+

@@ -1,19 +1,18 @@
 import { IsUserAuthenticated } from "../components/authentication";
-import { data, Link } from "react-router"
-import { User } from "../components/types";
-
-let testList: string[] = [];
-
-for (let i=0; i<100; i++){
-    testList[i] = (`RandomName${i}`);
-}
+import { data, Link, useNavigate } from "react-router"
+import { ClientFormData, User, UserValidator } from "../components/types";
+import { GetAllClientFormsByOwner } from "../components/database";
 
 export async function loader({ request }: any) {
   // console.log(request);
   const responseData = await IsUserAuthenticated(request);
   
   if (responseData.clientResponse.success) {
-    // Anything that requires authentication in here.
+    const ownedForms = await GetAllClientFormsByOwner(UserValidator.parse(responseData.clientResponse.user));
+      // Anything that requires authentication in here.
+    return data({...responseData.clientResponse, formList: ownedForms}, {
+        headers: [...responseData.headers],
+    });
   } else {
 
   }
@@ -23,15 +22,18 @@ export async function loader({ request }: any) {
   });
 };
 
-const selectClient = (event: any) => {
-    if (event.target.value != ""){
-        const clientName: string = event.target.value
-        console.log(clientName);
-        // Need to redirect the user to a form page and pass in the clientName as props
-    }
-}
 
 function Home( { loaderData }: any) {
+    const navigate = useNavigate();
+    
+    const selectClient = (event: any) => {
+        if (event.target.value != ""){
+            const clientName: string = event.target.value
+            // Need to redirect the user to a form page and pass in the clientName as props
+            navigate(`/onboardForm/${clientName}/page1`)
+        }
+    }
+
     if (loaderData.success) {
         const user: User = loaderData.user;
 
@@ -44,20 +46,22 @@ function Home( { loaderData }: any) {
             case "Secretary":
                 return(
                     <>
-                        <Link to="/onboardForm" id="newClientButton">Onboard New Client</Link>
+                        <Link to="/onboardForm/page1" id="newClientButton">Onboard New Client</Link>
                         
                         <div id="existingClientSelector">
                             <p>Continue Onboarding an Existing Client</p>
                             <select id="existingClientDropdown" name="userType" onChange={selectClient}>
                                 <option value="">Select a client</option>
-                                { testList.map((item, index) => <option value={item} key={index}> {item} </option>)}
+                                { loaderData.formList.map((formData: ClientFormData) => <option key={formData.ClientName}> {formData.ClientName}</option>)}
                             </select>
                         </div>
                     </>
                 )
+            default:
+                return (<p>Please log in to access this page.</p>)
         }
     }
-    return (<p>Please log in to access this page.</p>)
+    
 }
 
 export default Home
