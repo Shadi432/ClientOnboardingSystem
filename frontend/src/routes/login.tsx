@@ -33,8 +33,8 @@ function Login({ actionData }: any){
   const [showPassword, setShowPassword] = useState(false);
 
   return(
-    <>
-      <Form id="loginForm" action="" method="post">                
+    <div id="loginForm">
+      <Form  action="" method="post">                
         <span className="inputTitle"> Login </span>
         <input className="inputBox" name="username" type="text" placeholder="Enter Username"/>
         <input className="inputBox" name="password" type={showPassword ? "text" : "password" } placeholder="Enter Password"/>
@@ -43,7 +43,7 @@ function Login({ actionData }: any){
       </Form>
       { actionData && actionData == "400" &&  <p> Successfully logged in </p> }
       { actionData && actionData == "500" && <p> Error whilst logging in </p> }
-    </>
+    </div>
   )
   
 }

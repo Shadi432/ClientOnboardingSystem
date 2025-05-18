@@ -73,7 +73,7 @@ button:focus-visible {
   top: 0px;
   width: 100%;
   margin-top: 0px;
-  background-color:rgba(255, 255, 255, 0.911);
+  background-color:rgba(255, 255, 255, 0.048);
   border-color: #000000;
   border-style: solid;
   text-align: center;
@@ -81,7 +81,7 @@ button:focus-visible {
 
 /* Login Form */
 #loginForm {
-  margin-left: 10%;  
+  margin-left: 35%;  
 }
 
 .inputBox {
@@ -139,4 +139,18 @@ button:focus-visible {
 
 .dateField {
   display: block;
+}
+
+.ribbonButton {
+  margin-right: 5%;
+  background-color: rgba(0, 153, 153, 0);
+  color: #ffffff;
+}
+
+#createUserForm {
+  margin-left: 35%;
+}
+
+#userTypeDropdown {
+  margin-left: 5%;
 }
