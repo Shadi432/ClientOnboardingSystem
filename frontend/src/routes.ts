@@ -14,7 +14,6 @@ export default [
       route(":clientName?/page2", "./routes/onboardForm/page2.tsx"),
       route(":clientName?/page3", "./routes/onboardForm/page3.tsx")
     ]),
-    // route("onboardForm/:clientName?/page3", "./routes/onboardForm/page3.tsx")
   ]),
   route("authFail", "./routes/UnauthenticatedUser.tsx"),
 ] satisfies RouteConfig;

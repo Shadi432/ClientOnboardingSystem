@@ -1,4 +1,4 @@
-import {Form, useOutletContext } from "react-router";
+import { Form, useOutletContext } from "react-router";
 import { Dropdown, InputField }  from "../../components/FormComponents";
 
 // This should have stuff like the forwards and back arrows etc, save button, etc.

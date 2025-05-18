@@ -40,7 +40,7 @@ test("CreateUserValidationTests: HappyPath", async () => {
       },
     }
   }
-
+  // Unmocking this because its mocked in previous tests but needs to be unmocked for this
   vi.doUnmock("bcryptjs");
   mocks.CreateUser.mockReturnValueOnce(null);
   const result: any = await action(requestMock);
