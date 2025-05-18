@@ -35,7 +35,6 @@ export async function action({request} : any){
       return data({ err: "This username already exists" });
     }
   }
-
   return data({success: true})
 }
 
