@@ -1,0 +1,1 @@
+import{j as t,b as e}from"./chunk-D4RADZKF-D5YP4RZF.js";const s=()=>t.jsxs("div",{style:{textAlign:"center",marginTop:"10vh"},children:[t.jsx("h2",{children:"You are not authenticated"}),t.jsx("p",{children:"Please log in to access this page."}),t.jsx(e,{to:"/login",children:t.jsx("button",{children:"Go to Login"})})]});export{s as default};

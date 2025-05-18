@@ -15,8 +15,6 @@ dist-ssr
 .env
 sqlScripts/
 
-build/
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
