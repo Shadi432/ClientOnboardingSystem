@@ -1,0 +1,159 @@
+{
+  "_FormComponents-Bd6k5U4W.js": {
+    "file": "assets/FormComponents-Bd6k5U4W.js",
+    "name": "FormComponents",
+    "imports": [
+      "_chunk-D4RADZKF-D5YP4RZF.js",
+      "_index-YOtsuped.js"
+    ],
+    "css": [
+      "assets/FormComponents-agoxPcWL.css"
+    ]
+  },
+  "_FormComponents-agoxPcWL.css": {
+    "file": "assets/FormComponents-agoxPcWL.css",
+    "src": "_FormComponents-agoxPcWL.css"
+  },
+  "_chunk-D4RADZKF-D5YP4RZF.js": {
+    "file": "assets/chunk-D4RADZKF-D5YP4RZF.js",
+    "name": "chunk-D4RADZKF"
+  },
+  "_index-YOtsuped.js": {
+    "file": "assets/index-YOtsuped.js",
+    "name": "index",
+    "imports": [
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "_with-props-D_5hzzrq.js": {
+    "file": "assets/with-props-D_5hzzrq.js",
+    "name": "with-props",
+    "imports": [
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/entry.client.tsx": {
+    "file": "assets/entry.client-VpBxZRom.js",
+    "name": "entry.client",
+    "src": "src/entry.client.tsx",
+    "isEntry": true,
+    "imports": [
+      "_chunk-D4RADZKF-D5YP4RZF.js",
+      "_index-YOtsuped.js"
+    ],
+    "css": [
+      "assets/entry-BJH8ySB0.css"
+    ]
+  },
+  "src/root.tsx?__react-router-build-client-route": {
+    "file": "assets/root-CXSTKcZ-.js",
+    "name": "root",
+    "src": "src/root.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/createUserMenu.tsx?__react-router-build-client-route": {
+    "file": "assets/createUserMenu-CD8aq5gA.js",
+    "name": "createUserMenu",
+    "src": "src/routes/createUserMenu.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/header.tsx?__react-router-build-client-route": {
+    "file": "assets/header-Cweq4Ori.js",
+    "name": "header",
+    "src": "src/routes/header.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/home.tsx?__react-router-build-client-route": {
+    "file": "assets/home-D2Du7gsb.js",
+    "name": "home",
+    "src": "src/routes/home.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/login.tsx?__react-router-build-client-route": {
+    "file": "assets/login-CAQQgJrj.js",
+    "name": "login",
+    "src": "src/routes/login.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/logout.tsx?__react-router-build-client-route": {
+    "file": "assets/logout-l0sNRNKZ.js",
+    "name": "logout",
+    "src": "src/routes/logout.tsx?__react-router-build-client-route",
+    "isEntry": true
+  },
+  "src/routes/onboardForm/formParent.tsx?__react-router-build-client-route": {
+    "file": "assets/formParent-Cz5eaZ1s.js",
+    "name": "formParent",
+    "src": "src/routes/onboardForm/formParent.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  },
+  "src/routes/onboardForm/page1.tsx?__react-router-build-client-route": {
+    "file": "assets/page1-yHoUeJoq.js",
+    "name": "page1",
+    "src": "src/routes/onboardForm/page1.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js",
+      "_FormComponents-Bd6k5U4W.js",
+      "_index-YOtsuped.js"
+    ]
+  },
+  "src/routes/onboardForm/page2.tsx?__react-router-build-client-route": {
+    "file": "assets/page2-Blnl4EVQ.js",
+    "name": "page2",
+    "src": "src/routes/onboardForm/page2.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js",
+      "_FormComponents-Bd6k5U4W.js",
+      "_index-YOtsuped.js"
+    ]
+  },
+  "src/routes/onboardForm/page3.tsx?__react-router-build-client-route": {
+    "file": "assets/page3-D2bx3iae.js",
+    "name": "page3",
+    "src": "src/routes/onboardForm/page3.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_with-props-D_5hzzrq.js",
+      "_chunk-D4RADZKF-D5YP4RZF.js",
+      "_FormComponents-Bd6k5U4W.js",
+      "_index-YOtsuped.js"
+    ]
+  },
+  "src/routes/unauthenticatedUser.tsx?__react-router-build-client-route": {
+    "file": "assets/unauthenticatedUser-B2Vno9To.js",
+    "name": "unauthenticatedUser",
+    "src": "src/routes/unauthenticatedUser.tsx?__react-router-build-client-route",
+    "isEntry": true,
+    "imports": [
+      "_chunk-D4RADZKF-D5YP4RZF.js"
+    ]
+  }
+}
