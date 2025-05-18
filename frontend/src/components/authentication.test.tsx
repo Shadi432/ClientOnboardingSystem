@@ -4,8 +4,9 @@ import { HttpResponse } from "msw";
 import jwt from "jsonwebtoken";
 import { User, UserValidator } from "./types";
 
-const ACCESS_TOKEN_SECRET = "TESTSECRET"
-const REFRESH_TOKEN_SECRET = "TESTSECRET";
+
+const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET || "TEST SECRET";
+const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET || "TEST SECRET";
 
 const MockUser: User = {
   Username: "MockUser",

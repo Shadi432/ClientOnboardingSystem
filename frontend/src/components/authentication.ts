@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import { createCookie } from "react-router";
 import { UserAuthenticationData, UserValidator, User } from "../components/types";
 
-const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET;
-const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET;
+const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET || "TEST SECRET";
+const REFRESH_TOKEN_SECRET = import.meta.env.VITE_REFRESH_TOKEN_SECRET || "TEST SECRET";
 export const ACCESS_TOKEN_LIFETIME = "60m";
 export const REFRESH_TOKEN_LIFETIME = "180m";
 const SET_TOKEN_EXPIRED = "-1m";
