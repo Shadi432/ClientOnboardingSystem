@@ -8,6 +8,9 @@ function Page2(){
     const updateFormState = formStateHandler.updateFormState;
     const formState = formStateHandler.formState;
 
+    console.log("Cage");
+    console.log(formState);
+
   return(
     <>
       <div>

@@ -15,13 +15,6 @@ export function Dropdown({ name, label, options, updateState, formState, require
     label = label +  "*"
   }
 
-  // This is necessary so that the dropdowns are initialised in the formState
-  // console.log(formState);
-  if (!(formState.hasOwnProperty(name))){
-    formState.FormState[name] = options[0]
-    updateState(formState);
-  }
-
   return (
     <div className="dropdown">
       <span className="formLabel">{ label } </span>      

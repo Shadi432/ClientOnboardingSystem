@@ -12,7 +12,7 @@ function Page3(){
   let showBillingAddressOptions = ["Yes", "No"];
   let billingAddressLabel = "Is billing address same as main address?";
   let billingAddressName = "IsSameAsBillingAddress";
-
+  
   // Initialisation means that the last element is always the default value. Works for now because last element can always be no.
   if (!(formState.FormState.hasOwnProperty(billingAddressName))){
     formState.FormState[billingAddressName] = showBillingAddressOptions[0]
