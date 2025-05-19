@@ -67,6 +67,18 @@ export const ClientFormDataValidator = z.object({
     TaxInvestigationCenter: z.enum(["Center1", "Center2", "Center3"]),
     YearEnd: z.string().datetime().or(z.date().max(new Date())).or(z.string().max(0)).nullable(),
     IsVATInvoiceRequired: z.enum(["Yes", "No"]),
+    IsStatementRequired: z.enum(["Yes", "No"]),
+    IsSameAsBillingAddress: z.enum(["Yes", "No"]),
+    BillingLine1: z.string().min(5),
+    BillingLine2: z.string().min(5).or(z.string().max(0)),
+    BillingTown: z.string().min(2).max(50),
+    BillingCounty: z.string().min(2).max(50).or(z.string().max(0)),
+    BillingCountry: z.string().min(2).max(30),
+    BillingPostcode: z.string().min(4).max(20),
+    EmailFeeNote: z.enum(["Note1", "Note2"]),
+    EmailCorrespondence: z.string().email(),
+    EmailVATInvoice: z.enum(["EmailInvoice1", "EmailInvoice2"]),
+
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});
 

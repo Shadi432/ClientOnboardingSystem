@@ -204,10 +204,8 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
             break;
           case "FormState":
             const formState = JSON.parse(column.value);
-            const isValidFormState = ClientFormDataValidator.shape.FormState.safeParse(formState);
-            if (isValidFormState.success){
-              clientData.FormState = formState;
-            }
+            clientData.FormState = formState;
+            console.log(formState);
             break;
         }
       });

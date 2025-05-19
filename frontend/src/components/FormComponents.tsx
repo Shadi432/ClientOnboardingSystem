@@ -94,7 +94,7 @@ export function RadioButtonSet({name, label, options, updateState, formState, re
       <span>{label}</span>
       { options.map((option: string) => {
         let defaultValue = option == formState.FormState[name]
-        return(<div style={{display: "inline"}}><input defaultChecked={defaultValue} type="radio" name={name} value={option} onChange={(e) => onInputChanged(e.target.value, name, updateState, formState)}/> <span>{option}</span> </div>)
+        return(<div key={option}style={{display: "inline"}}><input defaultChecked={defaultValue} type="radio" name={name} value={option} onChange={(e) => onInputChanged(e.target.value, name, updateState, formState)}/> <span>{option}</span> </div>)
         })
       }
     </div>

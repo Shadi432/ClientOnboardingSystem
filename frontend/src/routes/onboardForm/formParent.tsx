@@ -10,6 +10,8 @@ const MAX_PAGES = 3
 export async function action({ request }: any){
   const formData = await request.formData()
   let formState = formData.get("formState");
+  console.log(JSON.parse(formState));
+  console.log("SEPARATOR");
   const result = await CreateNewClient(JSON.parse(formState));
   if ( result != null){
     console.log(`DB Error: ${result}`);
@@ -114,7 +116,6 @@ function FormParent( { loaderData }: any ){
         {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
             const checkDetails = formStateValidator(formState);
             if (checkDetails.headerCheck && checkDetails.contentCheck) {
-              console.log("Here??")
               setCanProceed(true);
               fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
               navigate(`/home`)
