@@ -78,3 +78,25 @@ export function DateField({name, label, updateState, formState, required}: any){
     </div>
   )
 }
+
+export function RadioButtonSet({name, label, options, updateState, formState, required}: any){
+  if (required){
+    label = label +  "*";
+  }
+
+  // Initialisation means that the last element is always the default value. Works for now because last element can always be no.
+  if (!(formState.FormState.hasOwnProperty(name))){
+    formState.FormState[name] = options[options.length-1]
+  } 
+
+  return(
+    <div>
+      <span>{label}</span>
+      { options.map((option: string) => {
+        let defaultValue = option == formState.FormState[name]
+        return(<div style={{display: "inline"}}><input defaultChecked={defaultValue} type="radio" name={name} value={option} onChange={(e) => onInputChanged(e.target.value, name, updateState, formState)}/> <span>{option}</span> </div>)
+        })
+      }
+    </div>
+  )
+}
