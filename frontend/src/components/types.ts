@@ -104,8 +104,6 @@ export const ClientFormDataValidator = z.object({
     CreditPreviousAddressCounty: z.string().min(2).max(20).or(z.string().max(0)),
     CreditPreviousAddressCountry: z.string().min(2).max(30),
     CreditPreviousAddressPostcode: z.string().min(2).max(15),
-
-
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});
 

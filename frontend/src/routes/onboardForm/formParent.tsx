@@ -88,7 +88,6 @@ function FormParent( { loaderData }: any ){
   
   if (loaderData.success){
     // Has to be done here if not react is unsure how many hooks to render.
-    console.log("Re-render");
     return(
       <>
         <p className="requiredField">Fields marked with * are required</p>

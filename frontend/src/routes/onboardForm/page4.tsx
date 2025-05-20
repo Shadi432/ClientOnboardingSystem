@@ -1,12 +1,12 @@
 import { useOutletContext } from "react-router";
 import { Checkbox, DateField, InputField } from "../../components/FormComponents";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import axios from "axios";
 
 // setsIsLoading to true, performs request, setsIsLoading to false.
-async function performCreditCheck(setIsLoading: any, setCreditCheckSuccess: any){
+async function performCreditCheck(setIsLoading: any, setCreditCheckSuccess: any, extraData?: any){
   setIsLoading(true);
-  await axios.post(" http://localhost:3000", {"Name": "MahdiBFof"}).then((response) => setCreditCheckSuccess(response.data)).catch((err) => console.log(err))
+  await axios.post(" http://localhost:3000", {"Name": "MahdiBFof", "ExtraInfo": extraData && extraData.name}).then((response) => setCreditCheckSuccess(response.data)).catch((err) => console.log(err))
   .finally(() => setIsLoading(false));
 }
 
@@ -27,6 +27,12 @@ function CreditSafeCheck(){
   const [isLoading, setIsLoading] = useState(false);
   const [creditCheckSuccess, setCreditCheckSuccess] = useState(false);
   const [creditCheckStarted, setCreditCheckStarted] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const onFileChange = (event: any) => {
+    console.log(event.target.files[0])
+    setSelectedFile(event.target.files[0])
+  }
 
   useEffect(() => {
     setCanProceed({canProceed: creditCheckSuccess})
@@ -76,26 +82,38 @@ function CreditSafeCheck(){
       </>
     )
   } else if (isLoading) {
+    const override: CSSProperties = {
+      display: "block",
+      margin: "0 auto",
+      borderColor: "red",
+    }
+
     return (
-      <div>
+      <div id="loadingSpinner">
         <p>Credit Check Started</p>
+        <img src="../assets/Spinner.svg" />
       </div>
     )
   } else if (creditCheckSuccess) {
     return (
       <div>
-          <p>Success</p>
-          
+        <p>Success</p>
+        
         <p> Finished loading!</p>
       </div>
     )
   } else {
     return(
-      <p>Failure</p>
-      // Ask them to upload a file, no matter what file they upload we'll return a success after that.
-      // On the back-end if there's a valid file then I'll just return true and everything else should work off that.
+      <div>
+        <p>Failure</p>
+        <input type="File" onChange={onFileChange} />
+        <button onClick={() => performCreditCheck(setIsLoading, setCreditCheckSuccess, selectedFile)}>Upload!</button>
+      </div>
     )
   }
 }
+
+
+
 
 export default CreditSafeCheck;

@@ -30,12 +30,13 @@ const sleep = (ms:number) => new Promise(r => setTimeout(r, ms));
 
 app.post("/", async (req: Request, res: Response) => {
 
-    console.log(req.body);
-
-    // To simulate processing time
-    await sleep(1000);
-
-    res.send(false);
+    if (req.body.ExtraInfo && req.body.ExtraInfo == "CorrectData.txt"){
+        res.send(true)
+    }  else {
+        // To simulate processing time
+        await sleep(4000);
+        res.send(false);
+    }
 });
 
 

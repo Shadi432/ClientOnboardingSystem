@@ -171,3 +171,7 @@ button:focus-visible {
   height: 500px;
   overflow: hidden;
 }
+
+#loadingSpinner {
+  margin-left: 35%;
+}
