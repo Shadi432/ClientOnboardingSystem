@@ -26,11 +26,16 @@ function generateRefreshToken(){
 
 }
 
-app.get("/", (req: Request, res: Response) => {
+const sleep = (ms:number) => new Promise(r => setTimeout(r, ms));
+
+app.post("/", async (req: Request, res: Response) => {
 
     console.log(req.body);
 
-    res.send("Express + TypeScript Server");
+    // To simulate processing time
+    await sleep(1000);
+
+    res.send(false);
 });
 
 

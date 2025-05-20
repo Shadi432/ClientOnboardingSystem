@@ -4,7 +4,7 @@ import { useState } from "react"
 import { CreateNewClient, GetClientFormByName } from "../../components/database";
 import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
-const MAX_PAGES = 4
+const MAX_PAGES = 5
 
 
 export async function action({ request }: any){
@@ -79,35 +79,37 @@ function FormParent( { loaderData }: any ){
   const navigate = useNavigate();
   // Annoying because I'm trusting formState to be there and it won't be in the case of a authentication failure but it also won't be called in that case so it wouldn't error.
   const [formState, updateFormState] = useState(loaderData.formState);
-  const [canProceed, setCanProceed] = useState(true); 
+  const [canProceed, setCanProceed] = useState({canProceed: true, requiredMessage: ""}); 
   const [errList, setErrList] = useState([""]);
 
   let fetcher = useFetcher();
 
+  const displayNextButton = currentPageNum < MAX_PAGES && canProceed.canProceed;
   
   if (loaderData.success){
     // Has to be done here if not react is unsure how many hooks to render.
+    console.log("Re-render");
     return(
       <>
         <p className="requiredField">Fields marked with * are required</p>
 
-        <Outlet context={{formState: formState, updateFormState: updateFormState}} />
+        <Outlet context={{formState: formState, updateFormState: updateFormState, setCanProceed: setCanProceed}} />
 
         {/* Div is for styling purposes use it well. */}
         <div id="errorList">
           { !canProceed && errList.map((err) => <p key={err}> {err} </p>) }
         </div>
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
-        {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+
+        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+
         <div id="saveAndFinish">
           <button className="saveButton" type="button" onClick={() => {
             const checkDetails = formStateValidator(formState);
             if (checkDetails.headerCheck){
-              setCanProceed(true);
               fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
               navigate(`/home`);
             } else {
-              setCanProceed(false);
               setErrList(checkDetails.errorList);
             }
           } }>Save and Quit</button>
@@ -115,15 +117,13 @@ function FormParent( { loaderData }: any ){
           {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
               const checkDetails = formStateValidator(formState);
               if (checkDetails.headerCheck && checkDetails.contentCheck) {
-                setCanProceed(true);
                 fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
                 navigate(`/home`)
               } else {
-                setCanProceed(false);
                 setErrList(checkDetails.errorList);
               }
             }}> Finish </button>}
-          </div>
+        </div>
       </>
     )
   } 

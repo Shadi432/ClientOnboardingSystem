@@ -156,14 +156,14 @@ button:focus-visible {
 }
 
 #creditSafeButton {
-  margin-top: 50%;
+  margin-top: 30%;
   margin-left: 35%;
   position: absolute;
 }
 
 #saveAndFinish {
   position: absolute;
-  margin-top: 50%;
+  margin-top: 30%;
   margin-left: 75%;
 }
 

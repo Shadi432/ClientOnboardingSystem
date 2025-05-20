@@ -1,18 +1,20 @@
 import { useOutletContext } from "react-router";
 import { Checkbox, DateField, InputField } from "../../components/FormComponents";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-
-function performCreditCheck(){
-  console.log("Test");
-
-  return true;
+// setsIsLoading to true, performs request, setsIsLoading to false.
+async function performCreditCheck(setIsLoading: any, setCreditCheckSuccess: any){
+  setIsLoading(true);
+  await axios.post(" http://localhost:3000", {"Name": "MahdiBFof"}).then((response) => setCreditCheckSuccess(response.data)).catch((err) => console.log(err))
+  .finally(() => setIsLoading(false));
 }
 
 function CreditSafeCheck(){
-  const formStateHandler: { formState: {FormState: any}, updateFormState: Function} = useOutletContext();
+  const formStateHandler: { formState: {FormState: any}, updateFormState: Function, setCanProceed: any} = useOutletContext();
   const formState = formStateHandler.formState;
   const updateFormState = formStateHandler.updateFormState;
+  const setCanProceed = formStateHandler.setCanProceed;
   
   const previousAddressName = "CreditPreviousAddress";
   const previousAddressLabel = "Add Previous Addresses?";
@@ -25,6 +27,10 @@ function CreditSafeCheck(){
   const [isLoading, setIsLoading] = useState(false);
   const [creditCheckSuccess, setCreditCheckSuccess] = useState(false);
   const [creditCheckStarted, setCreditCheckStarted] = useState(false);
+
+  useEffect(() => {
+    setCanProceed({canProceed: creditCheckSuccess})
+  }, [creditCheckSuccess])
   
   if (!creditCheckStarted){
     return(
@@ -38,7 +44,7 @@ function CreditSafeCheck(){
           <DateField name="CreditDOB" label="DOB:" updateState={updateFormState} formState={formState} required={true} />
         </div>
 
-        <button id="creditSafeButton" type="button" onClick={() => {setCreditCheckStarted(true); setCreditCheckSuccess(performCreditCheck())}}>Perform Creditsafe check</button>
+        <button id="creditSafeButton" type="button" onClick={() => {setCreditCheckStarted(true); performCreditCheck(setIsLoading, setCreditCheckSuccess)}}>Perform Creditsafe check</button>
 
         <div>
           <InputField name="CreditBuildingNo" label="Building No:" updateState={updateFormState} formState={formState} />
@@ -69,9 +75,25 @@ function CreditSafeCheck(){
         </div>
       </>
     )
-  } else {
+  } else if (isLoading) {
     return (
-      <p>Credit Check Started</p>
+      <div>
+        <p>Credit Check Started</p>
+      </div>
+    )
+  } else if (creditCheckSuccess) {
+    return (
+      <div>
+          <p>Success</p>
+          
+        <p> Finished loading!</p>
+      </div>
+    )
+  } else {
+    return(
+      <p>Failure</p>
+      // Ask them to upload a file, no matter what file they upload we'll return a success after that.
+      // On the back-end if there's a valid file then I'll just return true and everything else should work off that.
     )
   }
 }
