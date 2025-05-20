@@ -9,6 +9,11 @@ function onInputChanged(newValue: any, name: string, updateState: any, formState
   updateState(formState)
 }
 
+function updateCheckboxState(newValue: boolean, name: string, optionName: string, updateState: any, formState: any){
+  formState.FormState[name][optionName] = newValue;
+  updateState(formState);
+}
+
 
 export function Dropdown({ name, label, options, updateState, formState, required}: any){
   if (required){
@@ -90,6 +95,42 @@ export function RadioButtonSet({name, label, options, updateState, formState, re
         return(<div key={option}style={{display: "inline"}}><input defaultChecked={defaultValue} type="radio" name={name} value={option} onChange={(e) => onInputChanged(e.target.value, name, updateState, formState)}/> <span>{option}</span> </div>)
         })
       }
+    </div>
+  )
+}
+
+// A list of options allows for multiple options under the same name and saved to the same field in the db
+export function Checkbox({name, labels, updateState, formState, required}: any){
+  if (required){
+    labels = labels +  "*";
+  }
+  
+  // Initialise formstate with names of labels
+  if (!formState.FormState[name]){
+    formState.FormState[name] = {}
+  }
+
+  for (const index in labels){
+    if (!formState.FormState[name][labels[index]]){
+      formState.FormState[name][labels[index]] = false;
+      console.log(formState);
+    } else {
+      console.log(formState);
+    }
+  }
+
+  return (
+    <div>
+      { labels.map((option: string)=> {
+        return(
+          <>
+            {option}
+            <input key={option} defaultChecked={formState.FormState[name][option]} style={{marginLeft: "10%"}} type="checkbox" name={name} onChange={(e) => updateCheckboxState(e.target.checked, name, option, updateState, formState)} />
+          </>
+        )
+    })}
+    
+      {/* <input type="checkbox" name={name} /> */}
     </div>
   )
 }

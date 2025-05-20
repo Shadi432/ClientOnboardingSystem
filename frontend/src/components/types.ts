@@ -78,6 +78,16 @@ export const ClientFormDataValidator = z.object({
     EmailFeeNote: z.enum(["Note1", "Note2"]),
     EmailCorrespondence: z.string().email(),
     EmailVATInvoice: z.enum(["EmailInvoice1", "EmailInvoice2"]),
+    EmailStatement: z.enum(["EmailStatement1", "EmailStatement2"]),
+    BackupEmail: z.string().email().or(z.string().max(0)),
+    Telephone1: z.string().min(10).max(11),
+    Telephone2: z.string().min(10).max(11).or(z.string().max(0)),
+    Mobile: z.string().min(10).max(11).or(z.string().max(0)),
+    CreditTitle: z.string().min(1).max(20),
+    CreditFName: z.string().min(1).max(50),
+    CreditOtherNames: z.string().or(z.string().max(0)),
+    CreditLName: z.string().min(1).max(50),
+    PreviousNames: z.object({"Individual has previous name": z.boolean()}),
 
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});

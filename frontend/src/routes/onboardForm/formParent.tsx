@@ -4,14 +4,13 @@ import { useState } from "react"
 import { CreateNewClient, GetClientFormByName } from "../../components/database";
 import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
-const MAX_PAGES = 3
+const MAX_PAGES = 4
 
 
 export async function action({ request }: any){
   const formData = await request.formData()
   let formState = formData.get("formState");
-  console.log(JSON.parse(formState));
-  console.log("SEPARATOR");
+
   const result = await CreateNewClient(JSON.parse(formState));
   if ( result != null){
     console.log(`DB Error: ${result}`);

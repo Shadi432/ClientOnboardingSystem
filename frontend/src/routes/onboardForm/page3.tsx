@@ -53,12 +53,16 @@ function Page3(){
             <InputField name="BillingCounty" label="County:" updateState={updateFormState} formState={formState} />
             <InputField name="BillingCountry" label="Country:" updateState={updateFormState} formState={formState} required={true} />
             <InputField name="BillingPostcode" label="Postcode:" updateState={updateFormState} formState={formState} required={true} />
-
           </div>
         }
         <InputField name="EmailCorrespondence" label="Email Correspondence:" updateState={updateFormState} formState={formState} required={true} />
         <Dropdown name="EmailFeeNote" label="Email Fee note:" options={["Note1", "Note2"]} updateState={updateFormState} formState={formState} required={true} />
         <Dropdown name="EmailVATInvoice" label="Email VAT Invoice:" options={["EmailInvoice1", "EmailInvoice2"]} updateState={updateFormState} formState={formState} required={true} />
+        <Dropdown name="EmailStatement" label="Email Statement:" options={["EmailStatement1", "EmailStatement2"]} updateState={updateFormState} formState={formState} required={true} />
+        <InputField name="BackupEmail" label="Backup Email:" updateState={updateFormState} formState={formState} />
+        <InputField name="Telephone1" label="Telephone(1):" updateState={updateFormState} formState={formState} required={true} />
+        <InputField name="Telephone2" label="Telephone(2):" updateState={updateFormState} formState={formState} />
+        <InputField name="Mobile" label="Mobile:" updateState={updateFormState} formState={formState} />
       </div>
     </>
   )
