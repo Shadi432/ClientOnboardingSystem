@@ -99,30 +99,31 @@ function FormParent( { loaderData }: any ){
         </div>
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
         {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
-        
-        <button className="saveButton" type="button" onClick={() => {
-          const checkDetails = formStateValidator(formState);
-          if (checkDetails.headerCheck){
-            setCanProceed(true);
-            fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
-            navigate(`/home`);
-          } else {
-            setCanProceed(false);
-            setErrList(checkDetails.errorList);
-          }
-        } }>Save and Quit</button>
-
-        {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
+        <div id="saveAndFinish">
+          <button className="saveButton" type="button" onClick={() => {
             const checkDetails = formStateValidator(formState);
-            if (checkDetails.headerCheck && checkDetails.contentCheck) {
+            if (checkDetails.headerCheck){
               setCanProceed(true);
               fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
-              navigate(`/home`)
+              navigate(`/home`);
             } else {
               setCanProceed(false);
               setErrList(checkDetails.errorList);
             }
-          }}> Finish </button>}
+          } }>Save and Quit</button>
+
+          {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
+              const checkDetails = formStateValidator(formState);
+              if (checkDetails.headerCheck && checkDetails.contentCheck) {
+                setCanProceed(true);
+                fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
+                navigate(`/home`)
+              } else {
+                setCanProceed(false);
+                setErrList(checkDetails.errorList);
+              }
+            }}> Finish </button>}
+          </div>
       </>
     )
   } 

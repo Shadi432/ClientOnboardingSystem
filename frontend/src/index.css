@@ -154,3 +154,15 @@ button:focus-visible {
 #userTypeDropdown {
   margin-left: 5%;
 }
+
+#creditSafeButton {
+  margin-top: 50%;
+  margin-left: 35%;
+  position: absolute;
+}
+
+#saveAndFinish {
+  position: absolute;
+  margin-top: 50%;
+  margin-left: 75%;
+}

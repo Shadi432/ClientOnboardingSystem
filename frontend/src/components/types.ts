@@ -87,7 +87,24 @@ export const ClientFormDataValidator = z.object({
     CreditFName: z.string().min(1).max(50),
     CreditOtherNames: z.string().or(z.string().max(0)),
     CreditLName: z.string().min(1).max(50),
-    PreviousNames: z.object({"Individual has previous name": z.boolean()}),
+    CreditPreviousNames: z.object({"Individual has previous name": z.boolean()}),
+    CreditDOB: z.string().datetime().or(z.date().max(new Date())),
+    CreditBuildingNo: z.string().or(z.string().max(0)),
+    CreditBuildingName: z.string().min(1).max(20).or(z.string().max(0)),
+    CreditStreet: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditCity: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditCountry: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditPostcode: z.string().min(2).max(15),
+    CreditStartDate: z.string().datetime().or(z.date().max(new Date())),
+    CreditEndDate: z.string().datetime().or(z.date().max(new Date())),
+    CreditPreviousAddress: z.object({"Address Previous Addresses": z.boolean()}),
+    CreditPreviousAddressLine1: z.string().min(2).max(30),
+    CreditPreviousAddressLine2: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditPreviousAddressTown: z.string().min(2).max(30),
+    CreditPreviousAddressCounty: z.string().min(2).max(20).or(z.string().max(0)),
+    CreditPreviousAddressCountry: z.string().min(2).max(30),
+    CreditPreviousAddressPostcode: z.string().min(2).max(15),
+
 
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});

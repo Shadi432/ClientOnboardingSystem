@@ -113,9 +113,6 @@ export function Checkbox({name, labels, updateState, formState, required}: any){
   for (const index in labels){
     if (!formState.FormState[name][labels[index]]){
       formState.FormState[name][labels[index]] = false;
-      console.log(formState);
-    } else {
-      console.log(formState);
     }
   }
 
@@ -123,10 +120,10 @@ export function Checkbox({name, labels, updateState, formState, required}: any){
     <div>
       { labels.map((option: string)=> {
         return(
-          <>
+          <div key={option}>
             {option}
             <input key={option} defaultChecked={formState.FormState[name][option]} style={{marginLeft: "10%"}} type="checkbox" name={name} onChange={(e) => updateCheckboxState(e.target.checked, name, option, updateState, formState)} />
-          </>
+          </div>
         )
     })}
     
