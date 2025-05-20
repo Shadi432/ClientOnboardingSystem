@@ -94,8 +94,8 @@ function FormParent( { loaderData }: any ){
         <Outlet context={{formState: formState, updateFormState: updateFormState}} />
 
         {/* Div is for styling purposes use it well. */}
-        <div>
-          { !canProceed && errList.map((err) => <p style={{display: "block"}} key={err}> {err} </p>) }
+        <div id="errorList">
+          { !canProceed && errList.map((err) => <p key={err}> {err} </p>) }
         </div>
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
         {currentPageNum < MAX_PAGES && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }

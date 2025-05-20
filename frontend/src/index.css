@@ -120,12 +120,12 @@ button:focus-visible {
 
 .nextButton {
   position: absolute;
-  top: 85%;
+  top: 75%;
   left: 85%;
 }
 .previousButton {
   position: absolute;
-  top: 85%;
+  top: 75%;
   left: 15%;
 }
 
@@ -165,4 +165,9 @@ button:focus-visible {
   position: absolute;
   margin-top: 50%;
   margin-left: 75%;
+}
+
+#errorList {
+  height: 500px;
+  overflow: hidden;
 }
