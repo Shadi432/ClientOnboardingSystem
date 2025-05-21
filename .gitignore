@@ -25,3 +25,4 @@ sqlScripts/
 *.njsproj
 *.sln
 *.sw?
+backend/.env
