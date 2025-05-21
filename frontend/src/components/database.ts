@@ -1,7 +1,5 @@
 import tedious, { Connection, Request } from "tedious";
 import {  ClientFormData, ClientFormDataValidator, User } from "./types";
-import { z }from "zod";
-
 
 const CONFIG: tedious.ConnectionConfiguration = {
   server: "MAHDI\\MSSQLSERVER01",
@@ -279,7 +277,7 @@ export async function GetClientFormByName(clientName: string){
   });
 }
 
-export async function GetFormsToApprove(approverName: string, userRole: any){
+export async function GetFormsToApprove(approverName: string){
   return new Promise((resolve) => {
     const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE Status = 'Pending Review';`;
 

@@ -1,6 +1,6 @@
 import { IsUserAuthenticated } from "../components/authentication";
 import { data, Link, useFetcher, useNavigate } from "react-router"
-import { ClientFormData, ClientFormDataValidator, User, UserValidator } from "../components/types";
+import { ClientFormData, User, UserValidator } from "../components/types";
 import { CreateNewClient, GetAllClientFormsByOwner, GetClientFormByName, GetFormsToApprove } from "../components/database";
 
 export async function loader({ request }: any) {
@@ -15,7 +15,7 @@ export async function loader({ request }: any) {
     if (userType == "Secretary"){
         ownedForms = await GetAllClientFormsByOwner(UserValidator.parse(responseData.clientResponse.user));
     } else if (userType == "Partner" || "MLRO"){
-        ownedForms = await GetFormsToApprove(user.Username, userType);
+        ownedForms = await GetFormsToApprove(user.Username);
     }
     
       // Anything that requires authentication in here.
