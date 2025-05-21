@@ -112,6 +112,42 @@ button:focus-visible {
   color: black;
 }
 
+#approvalSelector {
+  top: -10vh;
+  left: 25vw;
+  background-color: #fdfcfc;
+  position: relative;
+  width: 50vw;
+}
+
+#pendingReview {
+  color: #000000;
+  display: inline-block;
+  left: 25%;
+  position: relative;
+}
+
+.reviewOption {
+  background-color: rgb(117, 122, 122);
+  min-height: 50px;
+  max-height: 50px;
+}
+
+.reviewTitle {
+  display: inline-block;
+  height: 50%;
+  background-color: #799995;
+  margin-left: 5%;
+  width: 50%;
+}
+
+.reviewSubmit {
+  height: 25%;
+  width: 25%;
+  left: 15%;
+  position: relative;
+}
+
 .requiredField {
   color: red;
   top: 25%;

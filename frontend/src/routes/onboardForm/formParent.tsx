@@ -33,14 +33,14 @@ export async function loader({ params, request }: any){
       clientName = params.clientName;
     }
     // This has to check that the current user owns the data or then you can change the link and get any record returned.
-      const jsonResult: any = await GetClientFormByName(clientName, currentUser);
+      const jsonResult: any = await GetClientFormByName(clientName);
       if (jsonResult.Owner && jsonResult.Owner != ""){
         return data({...responseData.clientResponse, formState: jsonResult} , {
           headers: [...responseData.headers],
         });
       } else {
         // No existing data, blank record.
-        return data({...responseData.clientResponse, formState: {ClientName: "", Owner: currentUser.Username, Status: "In Progress", PartnerToApprove: "", MLROToApprove: "", PartnerApproved: "false", MLROApproved: "false", FormState: {}}} , {
+        return data({...responseData.clientResponse, formState: {ClientName: "", Owner: currentUser.Username, Status: "In Progress", PartnerApproved: false, MLROApproved: false, FormState: {}}} , {
           headers: [...responseData.headers],
         });
       }
@@ -94,7 +94,6 @@ function FormParent( { loaderData }: any ){
   
   if (loaderData.success){
     // Has to be done here if not react is unsure how many hooks to render.
-    console.log(loaderData.formState);
     return(
       <>
         <p className="requiredField">Fields marked with * are required</p>
@@ -107,7 +106,7 @@ function FormParent( { loaderData }: any ){
         </div>
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
 
-        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); console.log(formState); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
 
         <div id="saveAndFinish">
           <button className="saveButton" type="button" onClick={() => {
@@ -123,7 +122,7 @@ function FormParent( { loaderData }: any ){
           {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
               const checkDetails = formStateValidator(formState);
               if (checkDetails.headerCheck && checkDetails.contentCheck) {
-                console.log(formState);
+                formState.Status = "Pending Review";
                 fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
                 navigate(`/home`)
               } else {

@@ -39,10 +39,8 @@ export const ClientFormDataValidator = z.object({
                 .max(150),
   Owner: z.string(),
   Status: statusEnum,
-  PartnerToApprove: z.string().default(""),
-  MLROToApprove: z.string().default(""),
-  PartnerApproved: z.boolean().default(false),
-  MLROApproved: z.boolean().default(false),
+  PartnerApproved: z.string().default("false"),
+  MLROApproved: z.string().default("false"),
   FormState: z.object({
     ClientType:  z.enum(["Individual", "Company"]),
     CompanyNameCheck: z.string().or(z.string().max(0)),
@@ -109,6 +107,8 @@ export const ClientFormDataValidator = z.object({
     CreditPreviousAddressCounty: z.string().min(2).max(20).or(z.string().max(0)),
     CreditPreviousAddressCountry: z.string().min(2).max(30),
     CreditPreviousAddressPostcode: z.string().min(2).max(15),
+    PartnerToApprove: z.string().default(""),
+    MLROToApprove: z.string().default(""),
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});
 

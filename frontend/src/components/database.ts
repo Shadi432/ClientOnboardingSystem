@@ -197,21 +197,12 @@ export async function GetAllClientFormsByOwner(owningUser: User){
               clientData.Status = isValidStatusOption.data;
             }
             break;
-          case "PartnerToApprove":
-            clientData.PartnerToApprove = column.value;
-            break;
-          
-          case "MLROToApprove":
-            clientData.MLROToApprove = column.value;
-            break;
-
           case "PartnerApproved":
-
-            clientData.PartnerApproved = z.coerce.boolean().parse(column.value);
+            clientData.PartnerApproved = column.value;
             break;
           
           case "MLROApproved":
-            clientData.MLROApproved = z.coerce.boolean().parse(column.value);
+            clientData.MLROApproved = column.value;
             break;
           case "FormState":
             const formState = JSON.parse(column.value);
@@ -228,7 +219,7 @@ export async function GetAllClientFormsByOwner(owningUser: User){
   }));
 }
 
-export async function GetClientFormByName(clientName: string, owningUser: User){
+export async function GetClientFormByName(clientName: string){
   return new Promise((resolve) => {
     const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE ClientName = '${clientName}';`;
 
@@ -259,12 +250,7 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
             clientData.ClientName = column.value;
             break;
           case "Owner":
-            if (owningUser.Username == column.value){
-              clientData.Owner = column.value;
-            } else {
-              clientData.Owner = "";
-              console.log("This user doesn't own this record.");
-            }
+            clientData.Owner = column.value;
             break;
           case "Status":
             const isValidStatusOption = ClientFormDataValidator.shape.Status.safeParse(column.value);
@@ -273,20 +259,12 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
               clientData.Status = isValidStatusOption.data;
             }
             break;
-          case "PartnerToApprove":
-            clientData.PartnerToApprove = column.value;
-            break;
-          
-          case "MLROToApprove":
-            clientData.MLROToApprove = column.value;
-            break;
-
           case "PartnerApproved":
-            clientData.PartnerApproved = z.coerce.boolean().parse(column.value);
+            clientData.PartnerApproved = column.value
             break;
             
           case "MLROApproved":
-            clientData.MLROApproved = z.coerce.boolean().parse(column.value);
+            clientData.MLROApproved = column.value
             break;
 
           case "FormState":
@@ -301,9 +279,78 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
   });
 }
 
-export async function CreateNewClient(formState: any){
+export async function GetFormsToApprove(approverName: string, userRole: any){
   return new Promise((resolve) => {
-    const CREATE_CLIENT_QUERY = `DELETE FROM ClientForms WHERE ClientName = '${formState.ClientName}'; INSERT INTO ClientForms ("ClientName", "Owner", "Status", "PartnerToApprove", "MLROToApprove", "PartnerApproved", "MLROApproved", "FormState") VALUES ('${formState.ClientName}', '${formState.Owner}', '${formState.Status}', '${formState.PartnerToApprove}', '${formState.MLROToApprove}', '${formState.PartnerApproved}', '${formState.MLROApproved}', '${JSON.stringify(formState.FormState)}');`;
+    const GET_CLIENT_DATA_QUERY = `SELECT * FROM ClientForms WHERE Status = 'Pending Review';`;
+
+    let clientFormList: ClientFormData[] = [];
+
+    // DB Connection
+    let connection = new Connection(CONFIG);
+    let dbRequest = new Request(GET_CLIENT_DATA_QUERY, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        connection.close();        
+        resolve(clientFormList);
+      }
+    });
+
+    connection.on("connect", function(err){
+      if (err) {
+        console.log("Error: ", err);
+      }
+      connection.execSql(dbRequest);
+    });
+
+    dbRequest.on("row", function(columns) {
+      let clientData = {} as ClientFormData;
+
+      columns.forEach(function(column: {metadata: {colName: string}, value: string} ){   
+        switch(column.metadata.colName){
+          case "ClientName":
+            clientData.ClientName = column.value;
+            break;
+          case "Owner":
+            clientData.Owner = column.value;
+            break;
+          case "Status":
+            const isValidStatusOption = ClientFormDataValidator.shape.Status.safeParse(column.value);
+            
+            if (isValidStatusOption.success) {
+              clientData.Status = isValidStatusOption.data;
+            }
+            break;
+          case "PartnerApproved":
+            clientData.PartnerApproved = column.value;
+            break;
+            
+          case "MLROApproved":
+            clientData.MLROApproved = column.value;
+            break;
+
+          case "FormState":
+            const formState = JSON.parse(column.value);
+            clientData.FormState = formState;
+            break;
+        }
+      });
+      
+      if (clientData.FormState["PartnerToApprove"] && clientData.FormState["PartnerToApprove"] == approverName && clientData.PartnerApproved == "false"){
+        clientFormList.push(clientData);
+      } else if (clientData.FormState["MLROToApprove"] && clientData.FormState["MLROToApprove"] == approverName && clientData.MLROApproved == "false"){
+        clientFormList.push(clientData);
+      }
+    });
+
+    connection.connect();
+  });
+}
+
+
+export async function CreateNewClient(formState: ClientFormData){
+  return new Promise((resolve) => {
+    const CREATE_CLIENT_QUERY = `DELETE FROM ClientForms WHERE ClientName = '${formState.ClientName}'; INSERT INTO ClientForms ("ClientName", "Owner", "Status", "PartnerApproved", "MLROApproved", "FormState") VALUES ('${formState.ClientName}', '${formState.Owner}', '${formState.Status}', '${formState.PartnerApproved}', '${formState.MLROApproved}', '${JSON.stringify(formState.FormState)}');`;
 
     // DB Connection
     let connection = new Connection(CONFIG);

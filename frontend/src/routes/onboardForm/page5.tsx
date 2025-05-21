@@ -1,6 +1,6 @@
 import { data, useOutletContext } from "react-router";
-import { Dropdown } from "../../components/FormComponents";
 import { GetAllUsersByRole } from "../../components/database";
+import { useEffect } from "react";
 
 export async function loader(){
   const partners = await GetAllUsersByRole("Partner");
@@ -20,24 +20,38 @@ export async function loader(){
   return data({partnerList: partnerNameList, mlroList: mlroNameList});
 }
 
-function TradingAs( { loaderData }: any){
+function Finalise( { loaderData }: any){
   const formStateHandler: { formState: any, updateFormState: Function} = useOutletContext();
   const formState = formStateHandler.formState;
   const updateFormState = formStateHandler.updateFormState;
+
+  if (!formState.FormState["PartnerToApprove"]){
+    formState.FormState["PartnerToApprove"] = loaderData.partnerList[0]
+  }
+
+  if (!formState.FormState["MLROToApprove"]){
+    formState.FormState["MLROToApprove"] = loaderData.mlroList[0];
+  }
 
   return(
     <>
       <input readOnly value={`Form Prepared by: ${formState["Owner"]}`} />
 
-      <div>
-        <Dropdown name="PartnerApproval" label="Partner approval:" options={loaderData.partnerList} updateState={updateFormState} formState={formState} required={true}/>
+      <div className="dropdown">
+        <span className="formLabel"> Partner Approval:</span>
+        <select name="PartnerToApprove" defaultValue={formState.FormState["PartnerToApprove"]} onChange={(e) => {formState.FormState["PartnerToApprove"] = e.target.value; console.log(formState); updateFormState(formState)}}>
+          { loaderData.partnerList.map((name: string) => <option key={name}>{ name }</option>)}
+        </select>
       </div>
 
-      <div>
-        <Dropdown name="MLROApproval" label="MLRO/Deputy Approval:" options={loaderData.mlroList} updateState={updateFormState} formState={formState} required={true} />
+      <div className="dropdown">
+        <span className="formLabel"> MLRO Approval:</span>
+        <select name="MLROToApprove" defaultValue={formState.FormState["MLROToApprove"]} onChange={(e) => {formState.FormState["MLROToApprove"] = e.target.value; console.log(formState); updateFormState(formState)}}>
+          { loaderData.mlroList.map((name: string) => <option key={name}>{ name }</option>)}
+        </select>
       </div>
     </>
   )
 }
 
-export default TradingAs
+export default Finalise;
