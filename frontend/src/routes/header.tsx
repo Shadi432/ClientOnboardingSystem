@@ -2,7 +2,6 @@ import { data, Link,NavLink, Outlet, useFetcher } from "react-router";
 import { IsUserAuthenticated } from "../components/authentication";
 
 export async function loader({ request }: any) {
-  // console.log(request);
   const responseData = await IsUserAuthenticated(request);
   
   if (responseData.clientResponse.success) {

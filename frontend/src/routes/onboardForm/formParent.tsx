@@ -4,6 +4,8 @@ import { useState } from "react"
 import { CreateNewClient, GetClientFormByName } from "../../components/database";
 import { ClientFormDataValidator, User, UserValidator } from "../../components/types";
 
+const IS_TESTING_MODE = import.meta.env.VITE_IS_TESTING_MODE || "false";
+
 const MAX_PAGES = 5
 
 
@@ -11,8 +13,10 @@ export async function action({ request }: any){
   const formData = await request.formData()
   let formState = formData.get("formState");
 
+  // Fill in PartnerToApprove and MLROToApprove and PartnerApproved and MLRO Approved
   const result = await CreateNewClient(JSON.parse(formState));
-  console.log("any of tis happenig?")
+
+  
   if ( result != null){
     console.log(`DB Error: ${result}`);
   }
@@ -31,13 +35,12 @@ export async function loader({ params, request }: any){
     // This has to check that the current user owns the data or then you can change the link and get any record returned.
       const jsonResult: any = await GetClientFormByName(clientName, currentUser);
       if (jsonResult.Owner && jsonResult.Owner != ""){
-        // console.log(jsonResult);
         return data({...responseData.clientResponse, formState: jsonResult} , {
           headers: [...responseData.headers],
         });
       } else {
         // No existing data, blank record.
-        return data({...responseData.clientResponse, formState: {ClientName: "", Owner: currentUser.Username, Status: "In Progress", FormState: {}}} , {
+        return data({...responseData.clientResponse, formState: {ClientName: "", Owner: currentUser.Username, Status: "In Progress", PartnerToApprove: "", MLROToApprove: "", PartnerApproved: "false", MLROApproved: "false", FormState: {}}} , {
           headers: [...responseData.headers],
         });
       }
@@ -59,16 +62,18 @@ function formStateValidator(formState: any): {headerCheck: boolean, contentCheck
 
   let errorList: string[] = [];
 
-  if (!clientNameCheck.success){
-    errorList.push(`ClientName: ${clientNameCheck.error.errors[0].message}`);
+  if (IS_TESTING_MODE == "false"){
+    if (!clientNameCheck.success){
+      errorList.push(`ClientName: ${clientNameCheck.error.errors[0].message}`);
+    }
+    
+    if (!formDataCheck.success){
+      formDataCheck.error.errors.map((error: any) => errorList.push(`${error.path[0]}: ${error.message}`));
+    }
+    return {headerCheck: clientNameCheck.success, contentCheck: formDataCheck.success, errorList: errorList};
   }
-  
-  if (!formDataCheck.success){
-    formDataCheck.error.errors.map((error: any) => errorList.push(`${error.path[0]}: ${error.message}`));
-  }
-  
 
-  return {headerCheck: clientNameCheck.success, contentCheck: formDataCheck.success, errorList: errorList};
+  return {headerCheck: true, contentCheck: true, errorList: []};
 }
 
 // This should have stuff like the forwards and back arrows etc, save button, etc.
@@ -89,6 +94,7 @@ function FormParent( { loaderData }: any ){
   
   if (loaderData.success){
     // Has to be done here if not react is unsure how many hooks to render.
+    console.log(loaderData.formState);
     return(
       <>
         <p className="requiredField">Fields marked with * are required</p>
@@ -101,7 +107,7 @@ function FormParent( { loaderData }: any ){
         </div>
         {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
 
-        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); console.log(formState); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
 
         <div id="saveAndFinish">
           <button className="saveButton" type="button" onClick={() => {
@@ -117,6 +123,7 @@ function FormParent( { loaderData }: any ){
           {currentPageNum == MAX_PAGES && <button type="button" onClick={() => {
               const checkDetails = formStateValidator(formState);
               if (checkDetails.headerCheck && checkDetails.contentCheck) {
+                console.log(formState);
                 fetcher.submit({ formState: JSON.stringify(formState) }, {action:"", method: "post"});
                 navigate(`/home`)
               } else {

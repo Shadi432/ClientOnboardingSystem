@@ -4,7 +4,6 @@ import { ClientFormData, User, UserValidator } from "../components/types";
 import { GetAllClientFormsByOwner } from "../components/database";
 
 export async function loader({ request }: any) {
-  // console.log(request);
   const responseData = await IsUserAuthenticated(request);
   
   if (responseData.clientResponse.success) {

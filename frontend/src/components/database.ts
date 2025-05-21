@@ -1,5 +1,6 @@
 import tedious, { Connection, Request } from "tedious";
 import {  ClientFormData, ClientFormDataValidator, User } from "./types";
+import { z }from "zod";
 
 
 const CONFIG: tedious.ConnectionConfiguration = {
@@ -61,6 +62,60 @@ export function GetUser(username: string): Promise<User>{
             break;
         }
       });
+    });
+
+    connection.connect();
+  });
+}
+
+export function GetAllUsersByRole(role: string): Promise<User[]>{
+  return new Promise((resolve) => {
+    const GET_USER_QUERY = `SELECT * FROM LoginDetails WHERE UserType = '${role}'`;
+
+    let userList: User[] = []
+    
+
+    // DB Connection
+    let connection = new Connection(CONFIG);
+    let dbRequest = new Request(GET_USER_QUERY, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        connection.close();        
+        resolve(userList);
+      }
+    });
+
+    connection.on("connect", function(err){
+      if (err) {
+        console.log("Error: ", err);
+      }
+      connection.execSql(dbRequest);
+    });
+
+    dbRequest.on("row", function(columns) {
+      let user = {} as User;
+      columns.forEach(function(column: any ){    
+
+        switch(column.metadata.colName){
+          case "UserId":
+            user.UserId = column.value;
+            break;
+          case "Username":
+            user.Username = column.value;
+            break;
+          case "Pass":
+            user.Pass = column.value;
+            break;
+          case "Email":
+            user.Email = column.value;
+            break;
+          case "UserType":
+            user.UserType = column.value;
+            break;
+        }
+      });
+      userList.push(user);
     });
 
     connection.connect();
@@ -142,6 +197,22 @@ export async function GetAllClientFormsByOwner(owningUser: User){
               clientData.Status = isValidStatusOption.data;
             }
             break;
+          case "PartnerToApprove":
+            clientData.PartnerToApprove = column.value;
+            break;
+          
+          case "MLROToApprove":
+            clientData.MLROToApprove = column.value;
+            break;
+
+          case "PartnerApproved":
+
+            clientData.PartnerApproved = z.coerce.boolean().parse(column.value);
+            break;
+          
+          case "MLROApproved":
+            clientData.MLROApproved = z.coerce.boolean().parse(column.value);
+            break;
           case "FormState":
             const formState = JSON.parse(column.value);
             const isValidFormState = ClientFormDataValidator.shape.FormState.safeParse(formState);
@@ -202,10 +273,25 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
               clientData.Status = isValidStatusOption.data;
             }
             break;
+          case "PartnerToApprove":
+            clientData.PartnerToApprove = column.value;
+            break;
+          
+          case "MLROToApprove":
+            clientData.MLROToApprove = column.value;
+            break;
+
+          case "PartnerApproved":
+            clientData.PartnerApproved = z.coerce.boolean().parse(column.value);
+            break;
+            
+          case "MLROApproved":
+            clientData.MLROApproved = z.coerce.boolean().parse(column.value);
+            break;
+
           case "FormState":
             const formState = JSON.parse(column.value);
             clientData.FormState = formState;
-            console.log(formState);
             break;
         }
       });
@@ -217,14 +303,14 @@ export async function GetClientFormByName(clientName: string, owningUser: User){
 
 export async function CreateNewClient(formState: any){
   return new Promise((resolve) => {
-    const CREATE_CLIENT_QUERY = `DELETE FROM ClientForms WHERE ClientName = '${formState.ClientName}'; INSERT INTO ClientForms ("ClientName", "Owner", "Status", "FormState") VALUES ('${formState.ClientName}', '${formState.Owner}', '${formState.Status}', '${JSON.stringify(formState.FormState)}');`;
+    const CREATE_CLIENT_QUERY = `DELETE FROM ClientForms WHERE ClientName = '${formState.ClientName}'; INSERT INTO ClientForms ("ClientName", "Owner", "Status", "PartnerToApprove", "MLROToApprove", "PartnerApproved", "MLROApproved", "FormState") VALUES ('${formState.ClientName}', '${formState.Owner}', '${formState.Status}', '${formState.PartnerToApprove}', '${formState.MLROToApprove}', '${formState.PartnerApproved}', '${formState.MLROApproved}', '${JSON.stringify(formState.FormState)}');`;
 
     // DB Connection
     let connection = new Connection(CONFIG);
     
     let dbRequest = new Request(CREATE_CLIENT_QUERY, function(err) {
       if (err) {
-        console.log(err);
+        console.log(`Error: ${err}`);
         resolve(err);
       } else {
         connection.close();

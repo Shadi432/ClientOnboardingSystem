@@ -39,6 +39,10 @@ export const ClientFormDataValidator = z.object({
                 .max(150),
   Owner: z.string(),
   Status: statusEnum,
+  PartnerToApprove: z.string().default(""),
+  MLROToApprove: z.string().default(""),
+  PartnerApproved: z.boolean().default(false),
+  MLROApproved: z.boolean().default(false),
   FormState: z.object({
     ClientType:  z.enum(["Individual", "Company"]),
     CompanyNameCheck: z.string().or(z.string().max(0)),

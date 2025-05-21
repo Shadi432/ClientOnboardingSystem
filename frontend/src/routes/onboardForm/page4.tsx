@@ -30,7 +30,6 @@ function CreditSafeCheck(){
   const [selectedFile, setSelectedFile] = useState(null);
 
   const onFileChange = (event: any) => {
-    console.log(event.target.files[0])
     setSelectedFile(event.target.files[0])
   }
 
