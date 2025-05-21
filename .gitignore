@@ -26,3 +26,4 @@ sqlScripts/
 *.sln
 *.sw?
 backend/.env
+frontend/coverage/
