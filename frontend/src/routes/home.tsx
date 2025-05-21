@@ -43,6 +43,8 @@ function Home( { loaderData }: any) {
 
             case "MLRO":
                 return(<><p>MLRO!</p></>);
+            case "Partner":
+                return(<>Partner</>)
             case "Secretary":
                 return(
                     <>
