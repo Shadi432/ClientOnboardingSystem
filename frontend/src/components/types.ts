@@ -41,6 +41,7 @@ export const ClientFormDataValidator = z.object({
   Status: statusEnum,
   FormState: z.object({
     ClientType:  z.enum(["Individual", "Company"]),
+    CompanyNameCheck: z.string().or(z.string().max(0)),
     Office: z.enum(["Norwich"]),
     Department: z.enum(["Business"]),
     Partner: z.string().max(50),

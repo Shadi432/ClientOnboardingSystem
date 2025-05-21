@@ -12,6 +12,7 @@ export async function action({ request }: any){
   let formState = formData.get("formState");
 
   const result = await CreateNewClient(JSON.parse(formState));
+  console.log("any of tis happenig?")
   if ( result != null){
     console.log(`DB Error: ${result}`);
   }

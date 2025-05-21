@@ -5,14 +5,16 @@ import jwt, { Secret } from "jsonwebtoken";
 import cors from "cors";
 import { UserValidator, User } from "./types";
 import bcrypt from "bcryptjs";
+import axios from "axios";
 
-
+const companyNumber = "01002769";
 
 dotenv.config();
 const app: Express = express();
 
 const stringCoercer = z.coerce.string();
 const PORT = stringCoercer.parse(process.env.PORT);
+const AUTH_STR = stringCoercer.parse(process.env.AUTHSTR);
 
 app.use(express.json());
 
@@ -39,6 +41,19 @@ app.post("/", async (req: Request, res: Response) => {
     }
 });
 
+app.get("/", async (req: Request, res: Response) => {
+    if (req.query.companyName == "Mcdo"){
+        await axios.get(`https://api.company-information.service.gov.uk/company/${companyNumber}`,{
+            headers: {
+            "Authorization": `Basic ${AUTH_STR}`,
+            }})
+        .then((response) => res.send(true))
+        .catch((err) => console.log("error"))
+        .finally(() => console.log("Finished company check"));
+    } else {
+        res.send(false);
+    }
+})
 
 app.listen(3000, () => {
     console.log(`[server]: Server is running at http://localhost:${3000}`);
