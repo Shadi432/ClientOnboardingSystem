@@ -31,20 +31,14 @@ export function Dropdown({ name, label, options, updateState, formState, require
 }
 
 export function InputField({name, label, updateState, formState, required}: any){
-  let defaultValue = ""
-
   if (required){
     label = label +  "*"
-  }
-
-  if (formState.FormState){
-    defaultValue = formState.FormState[name]
   }
 
   return (
     <div className="inputField">
       <span className="formLabel">{ label } </span>
-      <input name={ name } defaultValue={ defaultValue } onChange={ e => onInputChanged(e.target.value, name, updateState, formState) }></input>
+      <input name={ name } defaultValue={ formState.FormState[name] } onChange={ e => onInputChanged(e.target.value, name, updateState, formState) }></input>
     </div>
   )
 }
@@ -83,7 +77,7 @@ export function RadioButtonSet({name, label, options, updateState, formState, re
   }
 
   // Initialisation means that the last element is always the default value. Works for now because last element can always be no.
-  if (!(formState.FormState.hasOwnProperty(name))){
+  if (!(formState.FormState[name])){
     formState.FormState[name] = options[options.length-1]
   } 
 

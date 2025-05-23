@@ -47,14 +47,6 @@ export async function action( { request }: any) {
     }
 }
 
-    // Call to a client action?
-
-    // Server action needs to have a function that sets UserTypeApproved to True for clientName
-    // It also needs to get the record and here I can check if OtherTypeApproved = true. 
-    // If otehr type approved = true set it to complete instead of in-progress.
-    // If not then we can just finish.
-
-
 function Home( { loaderData }: any) {
     const navigate = useNavigate();
     const fetcher = useFetcher();
@@ -100,7 +92,6 @@ function Home( { loaderData }: any) {
                 return (<p>Please log in to access this page.</p>)
         }
     }
-    
 }
 
 export default Home

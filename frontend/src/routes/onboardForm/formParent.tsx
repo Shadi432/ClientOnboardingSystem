@@ -13,9 +13,7 @@ export async function action({ request }: any){
   const formData = await request.formData()
   let formState = formData.get("formState");
 
-  // Fill in PartnerToApprove and MLROToApprove and PartnerApproved and MLRO Approved
   const result = await CreateNewClient(JSON.parse(formState));
-
   
   if ( result != null){
     console.log(`DB Error: ${result}`);
@@ -56,12 +54,13 @@ function formStateValidator(formState: any): {headerCheck: boolean, contentCheck
 
   const formDataCheck: any = ClientFormDataValidator.shape.FormState.required().safeParse(formState.FormState);
   /* Need to do this because I declare these fields as partial so that they're not required so we can load them in
-    against the validator but we need to actually check them and have it be non-negotiable so they're valid befopre
+    against the validator but we need to actually check them and have it be non-negotiable so they're valid before
     they're stored in the database.
   */
 
   let errorList: string[] = [];
 
+  
   if (IS_TESTING_MODE == "false"){
     if (!clientNameCheck.success){
       errorList.push(`ClientName: ${clientNameCheck.error.errors[0].message}`);
@@ -102,11 +101,13 @@ function FormParent( { loaderData }: any ){
 
         {/* Div is for styling purposes use it well. */}
         <div id="errorList">
-          { !canProceed && errList.map((err) => <p key={err}> {err} </p>) }
+          { errList.map((err: any) => <p key={err}> {err} </p>) }
         </div>
-        {currentPageNum > 1 && <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
+        {currentPageNum > 1 &&
+         <button className="previousButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum - 1); navigate(`/onboardForm/page${currentPageNum-1}`)}}>Previous</button> }
 
-        { displayNextButton && <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
+        { displayNextButton &&
+         <button className="nextButton" type="button" onClick={() => { setCurrentPageNum(currentPageNum + 1); navigate(`/onboardForm/page${currentPageNum+1}`) } }>Next </button> }
 
         <div id="saveAndFinish">
           <button className="saveButton" type="button" onClick={() => {

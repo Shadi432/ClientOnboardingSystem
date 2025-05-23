@@ -1,6 +1,6 @@
 import { data, useOutletContext } from "react-router";
 import { GetAllUsersByRole } from "../../components/database";
-import { useEffect } from "react";
+import { Dropdown } from "../../components/FormComponents";
 
 export async function loader(){
   const partners = await GetAllUsersByRole("Partner");
@@ -25,6 +25,7 @@ function Finalise( { loaderData }: any){
   const formState = formStateHandler.formState;
   const updateFormState = formStateHandler.updateFormState;
 
+  // This initialisation is necessary because these intial values always need to be uploaded to the database or then no Partner/MLRO is selected, unlike other Dropdowns.
   if (!formState.FormState["PartnerToApprove"]){
     formState.FormState["PartnerToApprove"] = loaderData.partnerList[0]
   }
@@ -36,20 +37,8 @@ function Finalise( { loaderData }: any){
   return(
     <>
       <input readOnly value={`Form Prepared by: ${formState["Owner"]}`} />
-
-      <div className="dropdown">
-        <span className="formLabel"> Partner Approval:</span>
-        <select name="PartnerToApprove" defaultValue={formState.FormState["PartnerToApprove"]} onChange={(e) => {formState.FormState["PartnerToApprove"] = e.target.value; console.log(formState); updateFormState(formState)}}>
-          { loaderData.partnerList.map((name: string) => <option key={name}>{ name }</option>)}
-        </select>
-      </div>
-
-      <div className="dropdown">
-        <span className="formLabel"> MLRO Approval:</span>
-        <select name="MLROToApprove" defaultValue={formState.FormState["MLROToApprove"]} onChange={(e) => {formState.FormState["MLROToApprove"] = e.target.value; console.log(formState); updateFormState(formState)}}>
-          { loaderData.mlroList.map((name: string) => <option key={name}>{ name }</option>)}
-        </select>
-      </div>
+      <Dropdown name="PartnerToApprove" label="Partner Approval:" options={loaderData.partnerList} updateState={updateFormState} formState={formState} required={true} />
+      <Dropdown name="MLROToApprove" label="MLRO Approval:" options={loaderData.mlroList} updateState={updateFormState} formState={formState} required={true} />
     </>
   )
 }

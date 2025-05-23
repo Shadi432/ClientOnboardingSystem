@@ -122,7 +122,6 @@ export function GetAllUsersByRole(role: string): Promise<User[]>{
 
 export function CreateUser(user: User): Promise<Error | null>{
   return new Promise((resolve) => {
-    
     const CREATE_USER_QUERY = `INSERT INTO LoginDetails ("Username", "Pass", "Email", "UserType") VALUES ('${user.Username}', '${user.Pass}', '${user.Email}', '${user.UserType}');`;
 
     // DB Connection

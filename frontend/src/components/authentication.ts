@@ -65,8 +65,6 @@ export async function VerifyAccessToken(request: any): Promise<UserAuthenticatio
   
   const accessTokenCookie = await accessTokenCookieManager.parse(cookieHeader) || {};
   const refreshTokenCookie = await refreshTokenCookieManager.parse(cookieHeader) || {};
-  
-  
 
   if (accessTokenCookie.accessToken == null){
     const authData: UserAuthenticationData = { success: false, headersList: null, user: null};

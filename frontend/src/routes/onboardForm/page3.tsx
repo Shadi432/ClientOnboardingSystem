@@ -14,7 +14,7 @@ function Page3(){
   let billingAddressName = "IsSameAsBillingAddress";
   
   // Initialisation means that the last element is always the default value. Works for now because last element can always be no.
-  if (!(formState.FormState.hasOwnProperty(billingAddressName))){
+  if (!(formState.FormState[billingAddressName])){
     formState.FormState[billingAddressName] = showBillingAddressOptions[0]
   } else if (formState.FormState[billingAddressName] == "No") {
     defaultBillingAddressDisplay = true; 
