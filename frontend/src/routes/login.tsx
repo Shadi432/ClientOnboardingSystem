@@ -2,7 +2,11 @@ import { useState } from "react";
 import { data, Form } from "react-router";
 import { GenerateAccessTokens } from "../components/authentication";
 import bcrypt from "bcryptjs";
-import { GetUser } from "../components/database";
+
+const IS_TESTING_MODE = import.meta.env.VITE_IS_TESTING_MODE || "false";
+
+import { GetUser } from "../components/database"
+// import { GetUser } from "../components/database";
 
 // LoginUser: Used for the login form
 export async function action({request}: any) {

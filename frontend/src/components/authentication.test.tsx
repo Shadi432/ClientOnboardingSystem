@@ -2,7 +2,8 @@ import { expect, test } from "vitest";
 import { accessTokenCookieManager, GenerateAccessTokens, IsUserAuthenticated, Logout, refreshTokenCookieManager } from "./authentication";
 import { HttpResponse } from "msw";
 import jwt from "jsonwebtoken";
-import { User, UserValidator } from "./types";
+import { User, userTypeEnum, UserValidator } from "./types";
+
 
 
 const ACCESS_TOKEN_SECRET = import.meta.env.VITE_ACCESS_TOKEN_SECRET || "TEST SECRET";
@@ -175,8 +176,8 @@ async function GenerateTestAccessTokens(user: User, accessTokenLifetime: any, re
   };
 
   return([
-      ["Set-Cookie", await accessTokenCookieManager.serialize(accessTokenCookie)],
-      ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
-    ]);
+    ["Set-Cookie", await accessTokenCookieManager.serialize(accessTokenCookie)],
+    ["Set-Cookie", await refreshTokenCookieManager.serialize(refreshTokenCookie)]
+  ]);
 }
 
