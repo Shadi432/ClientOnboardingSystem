@@ -1,0 +1,11 @@
+USE OnboardingSystemDB; 
+-- Create tables
+CREATE TABLE ClientForms (
+  ClientName NVARCHAR(100) NOT NULL PRIMARY KEY,
+  Owner NVARCHAR(50) NOT NULL,
+  Status NVARCHAR(100) NOT NULL,
+  PartnerApproved NVARCHAR(6) NOT NULL,
+  MLROApproved NVARCHAR(6) NOT NULL,
+  FormState NVARCHAR(MAX) NOT NULL -- JSON'
+  CONSTRAINT CHK_FormState_JSON CHECK (ISJSON(FormState) = 1)
+)
