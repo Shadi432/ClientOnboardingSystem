@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO"]);
+const userTypeEnum = z.enum(["Secretary", "Manager", "Admin", "MLRO", "Partner"]);
 const statusEnum = z.enum(["In Progress", "Pending Review", "Completed"]);
 
 const requiredError = {
@@ -39,8 +39,11 @@ export const ClientFormDataValidator = z.object({
                 .max(150),
   Owner: z.string(),
   Status: statusEnum,
+  PartnerApproved: z.string().default("false"),
+  MLROApproved: z.string().default("false"),
   FormState: z.object({
     ClientType:  z.enum(["Individual", "Company"]),
+    CompanyNameCheck: z.string().or(z.string().max(0)),
     Office: z.enum(["Norwich"]),
     Department: z.enum(["Business"]),
     Partner: z.string().max(50),
@@ -60,6 +63,52 @@ export const ClientFormDataValidator = z.object({
     Postcode: z.string().min(4).max(20),
     DateOfBirth: z.string().datetime().or(z.date().max(new Date())),
     DOD: z.string().datetime().or(z.date().max(new Date())).or(z.string().max(0)).nullable(),
+    VATNumber: z.string().length(11),
+    NINumber: z.string().length(10),
+    UTR: z.string().min(1),
+    TaxType: z.enum(["Income Tax", "Value Added Tax", "Corporation Tax"]),
+    TaxInvestigationCenter: z.enum(["Center1", "Center2", "Center3"]),
+    YearEnd: z.string().datetime().or(z.date().max(new Date())).or(z.string().max(0)).nullable(),
+    IsVATInvoiceRequired: z.enum(["Yes", "No"]),
+    IsStatementRequired: z.enum(["Yes", "No"]),
+    IsSameAsBillingAddress: z.enum(["Yes", "No"]),
+    BillingLine1: z.string().min(5),
+    BillingLine2: z.string().min(5).or(z.string().max(0)),
+    BillingTown: z.string().min(2).max(50),
+    BillingCounty: z.string().min(2).max(50).or(z.string().max(0)),
+    BillingCountry: z.string().min(2).max(30),
+    BillingPostcode: z.string().min(4).max(20),
+    EmailFeeNote: z.enum(["Note1", "Note2"]),
+    EmailCorrespondence: z.string().email(),
+    EmailVATInvoice: z.enum(["EmailInvoice1", "EmailInvoice2"]),
+    EmailStatement: z.enum(["EmailStatement1", "EmailStatement2"]),
+    BackupEmail: z.string().email().or(z.string().max(0)),
+    Telephone1: z.string().min(10).max(11),
+    Telephone2: z.string().min(10).max(11).or(z.string().max(0)),
+    Mobile: z.string().min(10).max(11).or(z.string().max(0)),
+    CreditTitle: z.string().min(1).max(20),
+    CreditFName: z.string().min(1).max(50),
+    CreditOtherNames: z.string().or(z.string().max(0)),
+    CreditLName: z.string().min(1).max(50),
+    CreditPreviousNames: z.object({"Individual has previous name": z.boolean()}),
+    CreditDOB: z.string().datetime().or(z.date().max(new Date())),
+    CreditBuildingNo: z.string().or(z.string().max(0)),
+    CreditBuildingName: z.string().min(1).max(20).or(z.string().max(0)),
+    CreditStreet: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditCity: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditCountry: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditPostcode: z.string().min(2).max(15),
+    CreditStartDate: z.string().datetime().or(z.date().max(new Date())),
+    CreditEndDate: z.string().datetime().or(z.date().max(new Date())),
+    CreditPreviousAddress: z.object({"Address Previous Addresses": z.boolean()}),
+    CreditPreviousAddressLine1: z.string().min(2).max(30),
+    CreditPreviousAddressLine2: z.string().min(2).max(30).or(z.string().max(0)),
+    CreditPreviousAddressTown: z.string().min(2).max(30),
+    CreditPreviousAddressCounty: z.string().min(2).max(20).or(z.string().max(0)),
+    CreditPreviousAddressCountry: z.string().min(2).max(30),
+    CreditPreviousAddressPostcode: z.string().min(2).max(15),
+    PartnerToApprove: z.string().default(""),
+    MLROToApprove: z.string().default(""),
   }).partial()
 }).required({ClientName: true, Owner: true, Status: true});
 

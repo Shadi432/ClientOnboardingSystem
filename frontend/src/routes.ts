@@ -12,7 +12,9 @@ export default [
     route("onboardForm", "./routes/onboardForm/formParent.tsx", [
       route(":clientName?/page1", "./routes/onboardForm/page1.tsx"),
       route(":clientName?/page2", "./routes/onboardForm/page2.tsx"),
-      route(":clientName?/page3", "./routes/onboardForm/page3.tsx")
+      route(":clientName?/page3", "./routes/onboardForm/page3.tsx"),
+      route(":clientName?/page4", "./routes/onboardForm/page4.tsx"),
+      route(":clientName?/page5", "./routes/onboardForm/page5.tsx")
     ]),
   ]),
   route("authFail", "./routes/UnauthenticatedUser.tsx"),

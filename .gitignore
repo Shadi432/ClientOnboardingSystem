@@ -25,3 +25,5 @@ sqlScripts/
 *.njsproj
 *.sln
 *.sw?
+backend/.env
+frontend/coverage/

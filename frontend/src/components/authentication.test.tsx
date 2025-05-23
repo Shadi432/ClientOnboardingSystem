@@ -36,11 +36,10 @@ test("Generating New Auth Tokens Happy Path", async () => {
   const validatedAccessTokenUser = UserValidator.safeParse(accessTokenUser);
   const validatedRefreshTokenUser = UserValidator.safeParse(refreshTokenUser);
 
-
   expect(validatedAccessTokenUser.success).toBe(true);
   expect(validatedRefreshTokenUser.success).toBe(true);
   expect(validatedAccessTokenUser.data).toStrictEqual(MockUser);
-  expect(validatedRefreshTokenUser.data).toStrictEqual(validatedAccessTokenUser.data);
+  expect(validatedRefreshTokenUser.data).toStrictEqual(MockUser);
 })
 
 // Generates new auth tokens and checks that they can be validated successfully.

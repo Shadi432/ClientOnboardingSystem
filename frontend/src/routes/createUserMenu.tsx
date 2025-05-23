@@ -54,6 +54,7 @@ function CreateUserMenu( { actionData }: any){
             <option value="Secretary">Secretary</option>
             <option value="Manager">Manager</option>
             <option value="MLRO">MLRO</option>
+            <option value="Partner">Partner</option>
           </select>
         </div>
         <button type="button" onClick = {() => {setShowPassword(!showPassword);}}> {showPassword ? "Hide Password" : "Show Password" } </button>
