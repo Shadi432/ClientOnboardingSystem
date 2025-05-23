@@ -27,3 +27,5 @@ sqlScripts/
 *.sw?
 backend/.env
 frontend/coverage/
+
+databaseMock.test.ts
