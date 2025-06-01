@@ -20,6 +20,11 @@ export function Dropdown({ name, label, options, updateState, formState, require
     label = label +  "*"
   }
 
+  // This initialisation is necessary because these intial values always need to be uploaded to the database or then no Partner/MLRO is selected, unlike other Dropdowns.
+  if (!formState.FormState[name]){
+    formState.FormState[name] = options[0];
+  }
+
   return (
     <div className="dropdown">
       <span className="formLabel">{ label } </span>      

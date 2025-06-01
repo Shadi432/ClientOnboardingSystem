@@ -47,7 +47,7 @@ export const ClientFormDataValidator = z.object({
     Office: z.enum(["Norwich"]),
     Department: z.enum(["Business"]),
     Partner: z.string().max(50),
-    Manager: z.string().max(30).or(z.string().max(0)),
+    Manager: z.string().max(5).or(z.string().max(0)),
     CaseWorker: z.string().max(30).or(z.string().max(0)),
     Title: z.enum(["Mr", "Mrs", "Miss", "Master", "Dr"]),
     FirstName: z.string().min(2).max(50),
